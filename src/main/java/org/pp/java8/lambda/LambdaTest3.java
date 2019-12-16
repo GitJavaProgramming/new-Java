@@ -1,5 +1,7 @@
 package org.pp.java8.lambda;
 
+import java.io.Serializable;
+
 public class LambdaTest3 {
     public static void main(String[] args) {
         int count = 0;
@@ -107,6 +109,18 @@ interface Function2<T, K> {
  */
 interface Function<T> {
     boolean func(T v1, T v2);
+//    <T>  boolean func3(T v1, T v2);
+
+    boolean equals(Object obj);
+
+    public static <T> Function<T> getInstance() {
+        return new Function<T>() {
+            @Override
+            public boolean func(T v1, T v2) {
+                return false;
+            }
+        };
+    }
 }
 
 // ===========================================================

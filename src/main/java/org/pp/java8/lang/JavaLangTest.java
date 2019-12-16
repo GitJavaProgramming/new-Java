@@ -3,7 +3,23 @@ package org.pp.java8.lang;
 public class JavaLangTest {
 
     public static void main(String[] args) {
-        testMath();
+//        testMath();
+//        testDataTypeConvert();
+    }
+
+    /**
+     * 测试数据类型转换，精度丢失问题
+     */
+    public static void testDataTypeConvert() {
+        int a = 10000;
+        long b = a; // ?????? 能自动类型转换吗？
+        float fc = a; // 这个呢
+        int d = (int) fc;
+        System.out.println(b);
+        System.out.println(fc);
+        System.out.println(d);
+//        System.arraycopy();
+//        Arrays.copyOf()
     }
 
     /**
