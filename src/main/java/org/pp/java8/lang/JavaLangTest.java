@@ -1,8 +1,9 @@
 package org.pp.java8.lang;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 public class JavaLangTest {
 
@@ -10,10 +11,104 @@ public class JavaLangTest {
 //        testMath();
         testDataTypeConvert();
 //        testArray();
+//        testCollection();
+    }
+
+    /**
+     * 测试集合操作 Iterator迭代器 remove方法等
+     */
+    public static void testCollection() {
+        List<Integer> list = new ArrayList<>();
+        list.add(3);
+        list.add(4);
+        list.add(5);
+        list.add(1);
+        list.add(6);
+        list.add(1);
+        /**
+         * public boolean remove(Object o)
+         * 引用下面方法删除 删除元素时，置空，向前移动后续元素(本质是数组拷贝！！！)
+         * private void fastRemove(int index) {
+         *         modCount++;
+         *         int numMoved = size - index - 1;
+         *         if (numMoved > 0)
+         *             System.arraycopy(elementData, index+1, elementData, index,
+         *                              numMoved);
+         *         elementData[--size] = null; // clear to let GC do its work
+         *     }
+         */
+//        System.out.println("list.remove=" + list.remove((Object)1)); // object 找到的第一个元素
+//        System.out.println("list.remove=" + list.remove((Object)1)); // object 找到的第一个元素
+//        System.out.println("list.remove=" + list.remove(1)); // index
+//        boolean b = list.removeIf((l) -> l.compareTo(1) == 0);
+//        System.out.println(b);
+//        System.out.println(list);
+
+        /*
+        // 新的元素删除方法
+        for(Integer integer : list) { // get()方法中的操作抛出Exception in thread "main" java.util.ConcurrentModificationException
+            boolean b = list.removeIf((l) -> l.compareTo(1) == 0);
+            System.out.println(b);
+        }
+        */
+        // 迭代器删除，在遍历时可用
+        /**  ArrayList<E> extends AbstractList<E> implements ....
+         * AbstractList提供迭代器实现，remove方法实现如下
+         * public void remove() {
+         *             if (lastRet < 0)
+         *                 throw new IllegalStateException();
+         *             checkForComodification();  // 集合是否已经变动了
+         *
+         *             try {
+         *                 AbstractList.this.remove(lastRet);
+         *                 if (lastRet < cursor)
+         *                     cursor--;
+         *                 lastRet = -1;
+         *                 expectedModCount = modCount; // modCount所有修改操作会modCount++;比如remove clear等操作
+         *             } catch (IndexOutOfBoundsException e) { // 检查异常，并发操作时，由于可见性可能存在 lastRet < 0 情况？？？
+         *                 throw new ConcurrentModificationException();
+         *             }
+         *         }
+         */
+//        list = new ArrayList<>();
+        Iterator<Integer> iter = list.iterator();
+//        iter.remove();
+        while (iter.hasNext()) {
+            // remove之前应该调用next()操作判断是否存在可删除元素
+//            iter.remove();  // 直接调用 Exception in thread "main" java.lang.IllegalStateException
+
+            /**
+             * public E next() {
+             *             checkForComodification();
+             *             try {
+             *                 int i = cursor;
+             *                 E next = get(i);
+             *                 lastRet = i; // 更新要操作的元素索引
+             *                 cursor = i + 1;
+             *                 return next;
+             *             } catch (IndexOutOfBoundsException e) {
+             *                 checkForComodification();
+             *                 throw new NoSuchElementException();
+             *             }
+             *         }
+             */
+            Integer integer = iter.next();
+            if (1 == integer) {
+                iter.remove(); // 本质：AbstractList.this.remove(lastRet/*索引*/);
+                System.out.println("iter.remove() list=" + list);
+
+                // 下面的操作可行，有了break就不有下次遍历
+                list.remove((Object) 1);
+                System.out.println("list.remove=" + list);
+                break;
+            }
+        }
+        System.out.println(list);
     }
 
     /**
      * 找出有多少对整数
+     * 数组操作
      */
     public static void testArray() {
         int n = 10;
@@ -37,6 +132,7 @@ public class JavaLangTest {
 
     /**
      * 测试数据类型转换，精度丢失问题
+     * 整型、浮点型、字符、位运算、JDK1.7之后字面值
      */
     public static void testDataTypeConvert() {
         int a = 10000;
@@ -88,7 +184,10 @@ public class JavaLangTest {
          *     }
          */
 
-        System.out.println();
+        System.out.println("参考本目录下--Java数据类.png、类型转换.png");
+
+        int tt = 0B1000;
+        System.out.println(~tt);
     }
 
     /**

@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * BinaryOperator<T> extends BiFunction<T,T,T>
  */
 public class ParallelStreamDemo {
-    public static /*final*/ List<Double> myList = new CopyOnWriteArrayList<>();
+    public static /*final*/ List<Double> myList = new CopyOnWriteArrayList<>() /*ArrayList()*/;
 
     static {
         myList.add(7.4);

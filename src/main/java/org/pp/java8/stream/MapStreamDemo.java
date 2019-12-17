@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 public class MapStreamDemo {
     public static void main(String[] args) {
-        List<Double> myList = ParallelStreamDemo.myList;
+        List<Double> myList = ParallelStreamDemo.myList; // 类初始化 -> static静态块执行 -> myList数据初始化
         Stream<Double> mapStream = myList.stream().map((a) -> {
             double result = Math.sqrt(a);
             System.out.println("Math.sqrt(" + a + ")=" + result);
