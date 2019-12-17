@@ -8,7 +8,7 @@ import java.util.Scanner;
 /**
  * 问题描述： https://www.hackerrank.com/challenges/crush/problem
  * <p>
- * 你能得多少分 嘿嘿~~~
+ * 最高60分 本例24分 你能得多少分 嘿嘿~~~ 听说平衡树O(NlogN)时间内可以？
  */
 public class ArrayManipulation {
     // Complete the arrayManipulation function below.
