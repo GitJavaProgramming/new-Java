@@ -7,14 +7,15 @@ import java.util.Scanner;
 
 /**
  * 问题描述： https://www.hackerrank.com/challenges/crush/problem
- *
+ * <p>
  * 你能得多少分 嘿嘿~~~
  */
 public class ArrayManipulation {
     // Complete the arrayManipulation function below.
+
     /**
      * Your code did not execute within the time limits 最佳时间复杂度
-     * */
+     */
     static long arrayManipulation(int n, int[][] queries) {
         long[][] repeatArray = new long[n][2];
         long maxNum = 0; // 最大值
