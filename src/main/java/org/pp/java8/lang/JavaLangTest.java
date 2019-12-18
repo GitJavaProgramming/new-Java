@@ -144,9 +144,17 @@ public class JavaLangTest {
         System.out.println(d);
 
 //        b = Long.MAX_VALUE;
-        b = Integer.MAX_VALUE + 1/*(0001)*/;
+        b = Integer.MAX_VALUE/*(0001)*/;  // 自动类型转换
+        System.out.println("long类型 b0 = " + b);  //  结果：2147483647
+        b = Integer.MAX_VALUE + 1/*(0001)*/;  // 相加结果为整数（位运算试试！），int到long 自动类型转换
+        System.out.println("long类型 b1 = " + b);  //  结果：-2147483648
         a = (int) b;
-        System.out.println(a); // 结果：-2147483648
+        System.out.println("long强制转换为int高位丢失 a1 = " + a); // 结果：-2147483648
+
+        b = Integer.MAX_VALUE + 1L/*(0001)*/; // 相加结果为双精度整数
+        System.out.println("long类型 b2 = " + b);  //  结果：2147483648
+        a = (int) b;
+        System.out.println("long强制转换为int高位丢失 a2 = " + a); // 结果：-2147483648
 
         // 二进制取反码/按位取反  ~(1000) = -1001  ~8=-9
         // 0000 1000 -> 1111 0111 -> 1111 1000(符号位不变) -> 1111 1001(反码+1) 高位为1 为负数
