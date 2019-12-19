@@ -1,5 +1,6 @@
 package org.pp.java8.lang;
 
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class JavaLangTest {
@@ -10,9 +11,37 @@ public class JavaLangTest {
 //        testArray();
 //        testCollection();
 //        testFinals();
-        testGenericArrayList();
+//        testGenericArrayList();
+        testCharset();
     }
 
+    /**
+     * 测试字符集、编码，解码
+     * 自行查阅字符集编码表
+     */
+    public static void testCharset() {
+        // 编码，默认字符集
+        String str = "ni号";
+
+        System.out.println("默认字符集：" + Charset.defaultCharset().name());
+
+        byte[] bytes = str.getBytes(); // 编码  默认字符集 utf-8
+        System.out.println("str.getBytes(defaultCharset)=" + Arrays.toString(bytes));
+
+        Charset gbkCharset = Charset.forName("GBK");
+        System.out.println("str.getBytes(GBK)=" + Arrays.toString(str.getBytes(gbkCharset)));
+
+        str = new String(bytes, Charset.forName("GBK")); // 解码 使用GBK
+        System.out.println("GBK decode: " + str); // 和预期的一样 乱码啦！
+
+//        char c = 65536; // 编译错误
+        char c = 65535;
+        System.out.println("最大的Unicode字符："+ new String(new char[] {c})); // 结果：￿ 文件utf-8编码，可以看到是这个字符，试试其他字符集编码文件！
+    }
+
+    /**
+     * 测试编写的泛型数组
+     */
     public static void testGenericArrayList() {
         GenericArrayList<Integer> arrayList = new GenericArrayList(10);
         arrayList.add(1);
@@ -26,9 +55,12 @@ public class JavaLangTest {
         System.out.println(arrayList);
     }
 
+    /**
+     * 测试final、finally、finalize
+     */
     public static void testFinals() {
         final Map<String, String> finalMap = new HashMap<>();
-        finalMap.put("11","22");
+        finalMap.put("11", "22");
         System.out.println(finalMap);
 //        finalMap = new HashMap<>();  // 编译出错！
     }
