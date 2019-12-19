@@ -1,17 +1,36 @@
 package org.pp.java8.lang;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class JavaLangTest {
 
     public static void main(String[] args) {
 //        testMath();
-        testDataTypeConvert();
+//        testDataTypeConvert();
 //        testArray();
 //        testCollection();
+//        testFinals();
+        testGenericArrayList();
+    }
+
+    public static void testGenericArrayList() {
+        GenericArrayList<Integer> arrayList = new GenericArrayList(10);
+        arrayList.add(1);
+        arrayList.add(2);
+        arrayList.add(5);
+        arrayList.add(4);
+        arrayList.add(3);
+        arrayList.add(4);
+        System.out.println(arrayList.size());
+        arrayList.remove(4);
+        System.out.println(arrayList);
+    }
+
+    public static void testFinals() {
+        final Map<String, String> finalMap = new HashMap<>();
+        finalMap.put("11","22");
+        System.out.println(finalMap);
+//        finalMap = new HashMap<>();  // 编译出错！
     }
 
     /**
