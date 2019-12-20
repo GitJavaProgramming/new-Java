@@ -1,7 +1,5 @@
 package org.pp.concurrent.datastruct;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -35,10 +33,34 @@ public class ArrayManipulation {
         return maxNum;
     }
 
+    static long arrayManipulation2(int n, int[][] queries) {
+        long[][] repeatArray = new long[n][2];
+        return sum(queries, 0, repeatArray, 0);
+    }
+
+    static long sum(int[][] arr, int m, long[][] repeatArray, long maxNum) {
+        if (m > arr.length - 1) {
+            return maxNum;
+        } else {
+            int a = arr[m][0];
+            int b = arr[m][1];
+            int k = arr[m][2]; // 被加数
+            for (int i = a - 1; i < b; i++) {
+                repeatArray[i][0] = i; // 第i个数
+                repeatArray[i][1] += k; // 第i个数的值
+                if (maxNum < repeatArray[i][1]) {
+                    maxNum = repeatArray[i][1]; // 每一次相加后的最大值
+                }
+            }
+            m++;
+            maxNum = sum(arr, m, repeatArray, maxNum);
+        }
+        return maxNum;
+    }
+
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
 
         String[] nm = scanner.nextLine().split(" ");
 
@@ -57,14 +79,10 @@ public class ArrayManipulation {
                 queries[i][j] = queriesItem;
             }
         }
-
-        long result = arrayManipulation(n, queries);
-
-        bufferedWriter.write(String.valueOf(result));
-        bufferedWriter.newLine();
-
-        bufferedWriter.close();
-
         scanner.close();
+
+        long result = arrayManipulation2(n, queries);
+
+        System.out.println(result);
     }
 }
