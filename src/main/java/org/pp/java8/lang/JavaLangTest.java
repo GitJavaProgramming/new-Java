@@ -17,15 +17,18 @@ public class JavaLangTest {
 
     /**
      * 测试字符集、编码，解码
-     * 自行查阅字符集编码表
+     * 自行查阅字符集编码表、编码规则
+     * 如 Unicode字符集和UTF-8编码规则
      */
     public static void testCharset() {
         // 编码，默认字符集
         String str = "ni号";
+        System.out.println(str.length()); // 字符串长度为3  3个字符
 
         System.out.println("默认字符集：" + Charset.defaultCharset().name());
 
         byte[] bytes = str.getBytes(); // 编码  默认字符集 utf-8
+        // 字节数组长度为5 UTF-8规则中文占3个字节
         System.out.println("str.getBytes(defaultCharset)=" + Arrays.toString(bytes));
 
         Charset gbkCharset = Charset.forName("GBK");
