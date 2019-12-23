@@ -12,7 +12,47 @@ public class JavaLangTest {
 //        testCollection();
 //        testFinals();
 //        testGenericArrayList();
-        testCharset();
+//        testCharset();
+        testBinaryNumber();
+    }
+
+    /**
+     * 测试进制转换  自定义实现？？
+     * <p>
+     * 找出二进制表示中最大连续出现1的串的长度
+     */
+    public static void testBinaryNumber() {
+        int n = 27;
+        String s = Integer.toBinaryString(n); // 将整数转换成二进制字符串
+        /**
+         * 找出二进制表示中最大连续出现1的串的长度
+         */
+        System.out.println(s);
+        byte[] bytes = s.getBytes();
+//        System.out.println(Arrays.toString(s.getBytes()));
+        int count = 1;
+        int max = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            if (bytes[i] == 49) {
+                if (i == bytes.length - 1) {
+                    if ((n & 1) == 1) { // test 101（5） 1011（11） 1101（13） 11011（27）
+                        if (max <= count) {
+                            max = count++;
+                        }
+                    }
+                    break;
+                }
+                if (bytes[i + 1] == 49) {
+                    count++;
+                } else {
+                    if (max < count) {
+                        max = count;
+                    }
+                    count = 1;
+                }
+            }
+        }
+        System.out.println(max);
     }
 
     /**
@@ -39,7 +79,7 @@ public class JavaLangTest {
 
 //        char c = 65536; // 编译错误
         char c = 65535;
-        System.out.println("最大的Unicode字符："+ new String(new char[] {c})); // 结果：￿ 文件utf-8编码，可以看到是这个字符，试试其他字符集编码文件！
+        System.out.println("最大的Unicode字符：" + new String(new char[]{c})); // 结果：￿ 文件utf-8编码，可以看到是这个字符，试试其他字符集编码文件！
     }
 
     /**
