@@ -20,6 +20,8 @@ public class JavaLangTest {
      * 测试进制转换  自定义实现？？
      * <p>
      * 找出二进制表示中最大连续出现1的串的长度
+     *
+     * 将最大串打印出来  动态规划
      */
     public static void testBinaryNumber() {
         int n = 27;
