@@ -2,6 +2,9 @@ package org.pp.java8.datastruct.linear;
 
 import java.util.NoSuchElementException;
 
+/**
+ * 双向队列
+ */
 public class GenericLinkedList<E> {
 
     /**
