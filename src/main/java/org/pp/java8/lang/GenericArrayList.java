@@ -1,38 +1,25 @@
 package org.pp.java8.lang;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Arrays;
+
+import static org.pp.java8.util.ReflectionUtl.getSuperClassGenericType;
 
 public class GenericArrayList<T> {
     private T[] ts;
     private int size = 0;
 
+    public GenericArrayList() {
+        init(16);
+    }
+
     public GenericArrayList(int len) {
         init(len);
     }
 
-    public void init(int capacity) {
+    private void init(int capacity) {
         Class<T> tClass = getSuperClassGenericType(getClass(), 0);
         this.ts = (T[]) Array.newInstance(tClass, capacity);
-    }
-
-    public static Class getSuperClassGenericType(final Class clazz, final int index) {
-        System.out.println(clazz.getSimpleName());
-        Type genType = clazz.getGenericSuperclass();
-        if (!(genType instanceof ParameterizedType)) {
-            return Object.class;
-        }
-        Type[] params = ((ParameterizedType) genType).getActualTypeArguments();
-
-        if (index >= params.length || index < 0) {
-            return Object.class;
-        }
-        if (!(params[index] instanceof Class)) {
-            return Object.class;
-        }
-        return (Class) params[index];
     }
 
     /**

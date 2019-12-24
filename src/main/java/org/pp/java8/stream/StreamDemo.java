@@ -26,9 +26,7 @@ public class StreamDemo {
         stream = myList.stream();
         // lambda方法引用 ClassName:instanceMethodName
         Optional<Integer> maxVal = stream.max(Integer::compareTo);
-        if (maxVal.isPresent()) {
-            System.out.println("Maximum is : " + maxVal.get());
-        }
+        maxVal.ifPresent(integer -> System.out.println("Maximum is : " + integer));
 
         // list 排序
         Stream<Integer> sortedStream = myList.stream().sorted();
@@ -66,9 +64,7 @@ public class StreamDemo {
             System.out.println("下一个元素值b = " + b);
             return (a + b);
         });
-        if (optionalInteger.isPresent()) {
-            System.out.println("加法运算： " + optionalInteger.get());
-        }
+        optionalInteger.ifPresent(integer -> System.out.println("加法运算： " + integer));
 
         System.out.println("T reduce(T identity, BinaryOperator<T> accumulator);");
         // T reduce(T identity, BinaryOperator<T> accumulator);

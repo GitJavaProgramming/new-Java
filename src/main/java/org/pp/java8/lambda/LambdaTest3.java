@@ -1,9 +1,11 @@
 package org.pp.java8.lambda;
 
-import java.io.Serializable;
-
 public class LambdaTest3 {
     public static void main(String[] args) {
+
+//        Function ff = Function.getInstance();
+//        ff.func(1,1);
+
         int count = 0;
         HighTemp[] highTemps = {new HighTemp(89),
                 new HighTemp(81),
@@ -34,7 +36,8 @@ public class LambdaTest3 {
         count = counter3(highTemps, HighTemp::moreThanTemp2, anOther, flag);
         System.out.println("大于89数：" + count);
 
-        count = counter3(highTemps, new MyTemp()::comp, anOther, flag); // 这里必须通过对象引用
+//        Function3 function3 = MyTemp::comp;
+        count = MyTemp.counter3(MyTemp::comp, new MyTemp()/*1*/, anOther, flag); // 这里必须通过对象引用
         System.out.println("大于89数：" + count);
     }
 
@@ -75,12 +78,31 @@ public class LambdaTest3 {
 }
 
 //  counter3-----------------------------------------------------
+@FunctionalInterface
 interface Function3<T, K, V> {
     boolean func(T v1, K v2, V v3);
+
+    default MyTemp getInstance() {
+        return new MyTemp();
+    }
 }
 
 class MyTemp {
-    <T, K, V> boolean comp(T highTemp, K anOther, V object) {
+
+    /**
+     * HighTemp::moreThanTemp2返回函数式接口（闭包）实例
+     * f.func(t, k, v)
+     * interface Function3<T, K, V>
+     */
+    static <T, K, V> int counter3(Function3<T, K, V> f, T t, K k, V v) {
+        int count = 0;
+        if (f.func(t, k, v)) {
+            count++;
+        }
+        return count;
+    }
+
+    <K, V> boolean comp(/*MyTemp tmp, */K anOther, V object) {
         return true;
     }
 /*
@@ -103,7 +125,7 @@ interface Function2<T, K> {
 /**
  * 指定泛型函数式接口
  * 这种方法第一个参数匹配调用对象类型
- * 第二个参数匹配方法参数类型
+ * 第二个参数匹配方法参数类型  规约形式？？
  *
  * @param <T> 泛型
  */
