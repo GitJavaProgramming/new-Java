@@ -7,20 +7,20 @@ public class JavaLangTest {
 
     public static void main(String[] args) {
 //        testMath();
-//        testDataTypeConvert();
+        testDataTypeConvert();
 //        testArray();
 //        testCollection();
 //        testFinals();
 //        testGenericArrayList();
 //        testCharset();
-        testBinaryNumber();
+//        testBinaryNumber();
     }
 
     /**
      * 测试进制转换  自定义实现？？
      * <p>
      * 找出二进制表示中最大连续出现1的串的长度
-     *
+     * <p>
      * 将最大串打印出来  动态规划
      */
     public static void testBinaryNumber() {
@@ -61,6 +61,9 @@ public class JavaLangTest {
      * 测试字符集、编码，解码
      * 自行查阅字符集编码表、编码规则
      * 如 Unicode字符集和UTF-8编码规则
+     *
+     * unicode编码表对照
+     * https://unicode-table.com/cn/#currency-symbols
      */
     public static void testCharset() {
         // 编码，默认字符集
@@ -292,6 +295,18 @@ public class JavaLangTest {
 
         int tt = 0B1000;
         System.out.println(~tt);
+
+        System.out.println("输出所有字节：");
+        for (int i = Character.MIN_VALUE; i < Character.MAX_VALUE; i++) {
+            System.out.print((char) i);
+        }
+        System.out.println();
+        List<Character> characterList = new ArrayList<>();
+        characterList.add('\u2660');
+        characterList.add('\u2665');
+        characterList.add('\u2663');
+        characterList.add('\u2666');
+        System.out.println(characterList); // [♠, ♥, ♣, ♦]
     }
 
     /**
