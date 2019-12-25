@@ -8,12 +8,17 @@ Iterable  迭代器接口
         AbstractDeque
 
     List接口在AbstractList抽象类实现Iterator，可用于公共的toString---AbstractCollection
+
     Set接口 内部使用Map接口实现
         哈希表实现
-        平衡二叉树实现
+        平衡二叉树-红黑树实现
     Map
         HashMap Map.Entry Node数组
-        TreeMap 二叉树
+        TreeMap 平衡二叉树-红黑树
+
+     红黑树参考：
+         https://blog.csdn.net/v_JULY_v/article/details/6105630
+         其中包括红黑树的概念、红黑树的插入、删除、旋转修正
 
 序列化接口 包下面所有类基本都实现了Serializable接口，可以序列化
     实现 Serializable 接口允许对象序列化，以保存和恢复对象的全部状态，并且允许类在写入流时的状态和从流读取时的状态之间变化。
