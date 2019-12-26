@@ -1,4 +1,4 @@
-package org.pp.java8.stream;
+package org.pp.java8.stream.demo;
 
 import java.util.Objects;
 
