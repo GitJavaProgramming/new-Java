@@ -12,9 +12,34 @@ Iterable  迭代器接口
     Set接口 内部使用Map接口实现
         哈希表实现
         平衡二叉树-红黑树实现
+            实现排序Set接口 比较器外部传入
+
+    Queue接口
+        public interface BlockingQueue<E> extends Queue<E>
+        public interface Deque<E> extends Queue<E>
+        abstract class AbstractQueue<E> implements Queue<E>
+        队列基本实现：继承AbstractQueue 实现BlockingQueue/Deque
+        常用队列---
+            PriorityQueue
+            LinkedList实现的双端队列
+            BlockingQueue---阻塞队列系列 并发包下面很多个实现类（使用并发api实现阻塞）
+                    ArrayBlockingQueue ：一个由数组结构实现的有界阻塞队列。
+                    LinkedBlockingQueue ：一个由链表结构实现的有界阻塞队列。
+                    PriorityBlockingQueue ：一个支持优先级排序的无界阻塞队列。
+                    DelayQueue：一个使用优先级队列实现的无界阻塞队列。
+                    SynchronousQueue：一个不存储元素的阻塞队列。
+                    LinkedTransferQueue：一个由链表结构实现的无界阻塞队列。
+                    LinkedBlockingDeque：一个由链表结构实现的双向阻塞队列。
+            ADT：4种形式的处理方式,具体参考实现类源码如：java.util.concurrent.ArrayBlockingQueue
+                            Throws exception    Special value   Blocks              Times out
+                Insert       add(e)              offer(e)        put(e)              offer(e, time, unit)
+                Remove       remove()            poll()          take()              poll(time, unit)
+                Examine      element()           peek()          not applicable      not applicable
+
     Map
         HashMap Map.Entry Node数组
         TreeMap 平衡二叉树-红黑树
+            如果一颗二叉树除了最下面一层可能不满外，其他各层都是满的，该二叉树就是平衡二叉树。
 
      红黑树参考：
          https://blog.csdn.net/v_JULY_v/article/details/6105630

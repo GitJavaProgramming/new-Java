@@ -13,7 +13,7 @@ import java.io.*;
  * 1、二叉树转化为主链，同时保持中序遍历顺序不变
  * 2、将主链转化为平衡二叉树，同时保持中序遍历顺序不变
  *
- * @param <E> 元素类型
+ * @param <E> 元素类型，这里限定其是Comparable子类，或者使用Comparator<T>函数式接口由外部比较器比较
  */
 public class BST<E extends Comparable<E>> {
     /**
