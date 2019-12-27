@@ -7,13 +7,74 @@ public class JavaLangTest {
 
     public static void main(String[] args) {
 //        testMath();
-        testDataTypeConvert();
+//        testDataTypeConvert();
 //        testArray();
 //        testCollection();
 //        testFinals();
 //        testGenericArrayList();
 //        testCharset();
 //        testBinaryNumber();
+
+        testHashCode();
+    }
+
+    /**
+     * 被问到用Long、String哪个作为HashMap的key好时 用这个方法说服他
+     * HashMap通过hash算法函数算出hash值来定位key所在位置，所以这个hash算法应该尽可能优，因为算法得出相同的hash值
+     * 这个叫hash碰撞，此时会进行key值的比较和节点插入操作（至少HashMap实现是这样）
+     * HashMap中的key比较，会比较key的hashcode、equals方法，现在去查阅String、Long这两个方法
+     * String.hashCode
+     * public int hashCode() {
+     * int h = hash;
+     * if (h == 0 && value.length > 0) {
+     * char val[] = value;
+     *
+     * 以31为权，每一位为字符的ASCII值进行运算，用自然溢出来等效取模。 ASCII码见 http://blog.csdn.net/lucky_bo/article/details/52247939
+     * 哈希计算公式可以计为s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
+     * 用31做基础 ，主要是因为31是一个奇质数，所以31*i=32*i-i=(i<<5)-i，这种位移与减法结合的计算相比一般的运算快很多。
+     * for (int i = 0; i < value.length; i++) {
+     *      h = 31 * h + val[i]; // 逐个按照字符的utf-16的编码值求和
+     * }
+     * hash = h;
+     * }
+     * return h;
+     * }
+     *
+     * Long.hashCode 最终调用这个方法
+     * public static int hashCode(long value) {
+     *  return (int)(value ^ (value >>> 32)); // 位异或（相同为0，不同为1） 无符号右移
+     * }
+     * Long 64位，右移32位之后高位补0 变成二进制64位：32/0 + long的高32位（移位后的数的低32位）
+     * 可以看到hashCode返回值为int，所以是高32位与低32异或（都舍弃高32位）
+     * 由于 long 的hash 值是将 64 位运算得到32位，即讲一个大范围映射到小范围，因此必然会有 hash冲突。
+     *
+     * >>：带符号右移。正数右移高位补0，负数右移高位补1。比如：
+     * 4 >> 1，结果是2；-4 >> 1，结果是-2。-2 >> 1，结果是-1。
+     * >>>：无符号右移。无论是正数还是负数，高位通通补0。
+     * 对于正数而言，>>和>>>没区别。
+     * 对于负数而言，-2 >>> 1，结果是2147483647（Integer.MAX_VALUE），-1 >>> 1，结果是2147483647（Integer.MAX_VALUE）。
+     * 以下代码可以判断两个数的符号是否相等
+     * return ((a >> 31) ^ (b >> 31)) == 0;
+     * <p>
+     *
+     * 参考：
+     * https://www.iteye.com/blog/jackyrong-1979686
+     * https://www.cnblogs.com/zyzcj/p/8117695.html
+     * https://blog.csdn.net/w605283073/article/details/103001627
+     *
+     * 由结果可知都会产生hash冲突，就看应用场景怎样
+     */
+    public static void testHashCode() {
+        Long l1 = 1234L;
+        Long l2 = Integer.MAX_VALUE + 10L;
+        System.out.println(l1.hashCode()); // 1234
+        System.out.println(l2.hashCode()); // -2147483639
+        Long newValue = Long.MAX_VALUE & l2; // // 高位取反，低位 0 填充
+        System.out.println("newValue = " + newValue); // newValue = 2147483657
+        System.out.println(newValue.hashCode()); // -2147483639
+
+        System.out.println("C9".hashCode()); // 2134
+        System.out.println("Aw".hashCode()); // 2134
     }
 
     /**
@@ -61,7 +122,7 @@ public class JavaLangTest {
      * 测试字符集、编码，解码
      * 自行查阅字符集编码表、编码规则
      * 如 Unicode字符集和UTF-8编码规则
-     *
+     * <p>
      * unicode编码表对照
      * https://unicode-table.com/cn/#currency-symbols
      */
