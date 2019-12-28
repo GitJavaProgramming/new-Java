@@ -1,6 +1,6 @@
 package org.pp.java8.concurrent;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
