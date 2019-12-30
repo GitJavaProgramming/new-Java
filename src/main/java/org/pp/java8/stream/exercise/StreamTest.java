@@ -23,6 +23,8 @@ public class StreamTest {
             return a * b;
         });
         System.out.println("sum = " + sum);
+
+
     }
 
     /**

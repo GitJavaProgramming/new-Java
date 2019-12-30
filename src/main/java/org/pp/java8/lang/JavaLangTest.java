@@ -1,5 +1,7 @@
 package org.pp.java8.lang;
 
+import org.pp.java8.datastruct.linear.GenericArrayList;
+
 import java.nio.charset.Charset;
 import java.util.*;
 
