@@ -18,8 +18,8 @@ public class ThreadJoinTest {
         a.start();
         b.start();
         TimeUnit.SECONDS.sleep(1);
-//        a.interrupt();
-        b.interrupt(); // 中断A.join操作，捕获异常处理
+        a.interrupt();
+//        b.interrupt(); // 中断A.join操作，捕获异常处理
     }
 
     static class A extends Thread {
@@ -30,6 +30,7 @@ public class ThreadJoinTest {
                 TimeUnit.SECONDS.sleep(4);
             } catch (InterruptedException e) {
                 System.out.println("A sleep interrupted...");
+                System.out.println("A is " + Thread.currentThread().getState());
             }
             System.out.println("AAAAAAAA finished");
         }
@@ -50,6 +51,7 @@ public class ThreadJoinTest {
                 a.join(); // 等A执行完
             } catch (InterruptedException e) {
                 System.out.println("B interrupt -->> A join interrupted...");
+                System.out.println("a.state = " + a.getState());
             }
             System.out.println("B running here.");
         }
