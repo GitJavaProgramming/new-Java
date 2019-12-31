@@ -1,4 +1,4 @@
-package org.pp.java8.concurrent.demo.lock;
+package org.pp.java8.concurrent.asimpledemo.lock;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;

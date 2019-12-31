@@ -1,4 +1,4 @@
-package org.pp.java8.concurrent.demo.semaphore;
+package org.pp.java8.concurrent.asimpledemo.semaphore;
 
 public class TestSemaphore {
     private static final int N = 3;

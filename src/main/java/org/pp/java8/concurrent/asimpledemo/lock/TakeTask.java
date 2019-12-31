@@ -1,4 +1,4 @@
-package org.pp.java8.concurrent.demo.lock;
+package org.pp.java8.concurrent.asimpledemo.lock;
 
 public class TakeTask implements Runnable {
 
