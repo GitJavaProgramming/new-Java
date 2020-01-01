@@ -37,9 +37,10 @@ public boolean isInterrupted() 测试是否中断
 public static boolean interrupted() 测试当前线程是否中断，清除中断状态
 
 synchronized
-内置锁，独占锁
+内置锁，独占锁，隐式锁
 在Java对象头记录锁状态，Java中任何一个对象都有一个monitor与之关联，JVM进步/退出同步块通过monitorenter、monitorexit指令实现。
 在代码块释放前其他想要获取该监视器锁的线程将会被阻塞挂起。
+退出修饰的方法/代码块就会释放锁
 
 必须从同步环境内调用wait()、notify()、notifyAll()方法。线程不能调用对象上等待或通知的方法，除非它拥有那个对象的锁。
 void notify() 唤醒在此对象监视器上等待的单个线程。
@@ -117,12 +118,12 @@ final域 略！！
 参考资料
 JAVA并发编程实践.pdf
 JAVA并发编程的艺术.pdf
-Java高并发编程详解：多线程与架构设计
 实战Java高并发程序设计（第2版）.pdf
 Java并发编程之美.pdf
+Java高并发编程详解：多线程与架构设计
 Java多线程编程实战指南  核心篇.pdf
-Java语言规范 基于 Java SE 8 中文
 Java虚拟机规范  Java SE 8版
+Java语言规范 基于 Java SE 8 中文
 Unix网络编程卷2--进程间通信
 
 

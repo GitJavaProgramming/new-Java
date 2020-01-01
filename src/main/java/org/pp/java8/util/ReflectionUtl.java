@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 public class ReflectionUtl {
 
     public static Class getSuperClassGenericType(final Class clazz, final int index) {
-        System.out.println(clazz.getSimpleName());
+//        System.out.println(clazz.getSimpleName());
         Type genType = clazz.getGenericSuperclass();
         if (!(genType instanceof ParameterizedType)) {
             return Object.class;
