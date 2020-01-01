@@ -20,11 +20,10 @@ public class CyclicBarrierTest {
         MyTask shared = new MyTask(barrier);
         Stream.of(new Thread(shared), new Thread(shared), new Thread(shared))
                 .parallel()
-                .forEach(t -> t.start());
+                .forEach(Thread::start);
     }
 
     static class MyTask implements Runnable {
-
 
         private final CyclicBarrier barrier;
 
