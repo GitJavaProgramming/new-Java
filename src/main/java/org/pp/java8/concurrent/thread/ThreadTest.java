@@ -59,7 +59,7 @@ public class ThreadTest {
 
     /**
      * 线程api
-     *  sleep join yield interrupt
+     *  sleep join yield
      */
     public static void threadMethodTest() {
         Thread thread = new Thread(() -> {

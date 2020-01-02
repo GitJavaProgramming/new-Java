@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 /**
  * 实现一个线程安全的计数器和一个非线程安全的计数器
+ * CAS自旋操作 比较并交换 乐观锁机制
  */
 public class CasTest {
 

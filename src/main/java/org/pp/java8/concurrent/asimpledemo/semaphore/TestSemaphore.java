@@ -1,5 +1,7 @@
 package org.pp.java8.concurrent.asimpledemo.semaphore;
 
+import java.util.Arrays;
+
 public class TestSemaphore {
     private static final int N = 3;
     private static final int M = 2;
@@ -11,8 +13,6 @@ public class TestSemaphore {
             runnableArray[i] = new SemaphoreRunnable(N, M, i);
             threads[i] = new Thread(runnableArray[i]);
         }
-        for (int i = 0; i < N; i++) {
-            threads[i].start();
-        }
+        Arrays.stream(threads).forEach(Thread::start);
     }
 }
