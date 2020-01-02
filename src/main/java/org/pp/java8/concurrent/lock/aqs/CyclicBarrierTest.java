@@ -2,6 +2,8 @@ package org.pp.java8.concurrent.lock.aqs;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
 /**
@@ -18,7 +20,7 @@ public class CyclicBarrierTest {
     public static void main(String[] args) {
         CyclicBarrier barrier = new CyclicBarrier(N);
         MyTask shared = new MyTask(barrier);
-        Stream.of(new Thread(shared), new Thread(shared), new Thread(shared))
+        Stream.of(new Thread(shared), new Thread(shared), new Thread(shared), new Thread(shared), new Thread(shared))
                 .parallel()
                 .forEach(Thread::start);
     }
@@ -33,15 +35,18 @@ public class CyclicBarrierTest {
 
         @Override
         public void run() {
-            System.out.println(Thread.currentThread().getName() + "wait.");
+            System.out.println(Thread.currentThread().getName() + " wait.");
             try {
-                barrier.await();
+                barrier.await(2, TimeUnit.SECONDS);
+                barrier.isBroken(); // 重置、超时，从而使一个或多个参与者摆脱此 barrier，或者因为异常而导致某个屏障操作失败
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (BrokenBarrierException e) {
                 e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
             }
-            System.out.println(Thread.currentThread().getName() + "run here.");
+            System.out.println(Thread.currentThread().getName() + " run here.");
         }
     }
 }
