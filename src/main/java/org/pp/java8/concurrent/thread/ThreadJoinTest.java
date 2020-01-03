@@ -1,4 +1,4 @@
-package org.pp.java8.concurrent.util;
+package org.pp.java8.concurrent.thread;
 
 import java.util.concurrent.TimeUnit;
 

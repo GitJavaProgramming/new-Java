@@ -23,7 +23,7 @@
  * ---- 基本原理（volatile状态量与同步队列）
  * ---- Java中的队列同步器的应用（CountDownLatch、CyclicBarrier、Semaphore、Exchanger）
  * -- atomic包中原子操作类----基本类型与引用类型（CAS应用）
- * -- 线程安全的集合框架
+ * -- 线程安全的集合框架(HashMap的非线程安全性与ConcurrentHashMap的线程安全性源码剖析)
  * -- 锁
  * 活跃度、性能与测试
  *
