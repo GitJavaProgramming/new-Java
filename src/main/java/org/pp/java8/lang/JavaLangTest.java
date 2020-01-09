@@ -9,7 +9,7 @@ public class JavaLangTest {
 
     public static void main(String[] args) {
 //        testMath();
-//        testDataTypeConvert();
+        testDataTypeConvert();
 //        testArray();
 //        testCollection();
 //        testFinals();
@@ -17,7 +17,7 @@ public class JavaLangTest {
 //        testCharset();
 //        testBinaryNumber();
 
-        testHashCode();
+//        testHashCode();
     }
 
     /**
