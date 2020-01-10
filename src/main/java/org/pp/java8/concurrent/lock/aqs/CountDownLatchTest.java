@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
 
 /**
- * CountDownLatch
+ * CountDownLatch---内部共享锁
  * 一个同步辅助类，在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。
  * CountDownLatch 的一个有用特性是，它不要求调用 countDown 方法的线程等到计数到达零时才继续，而在所有线程都能通过之前，
  * 它只是阻止任何线程继续通过一个 await。
