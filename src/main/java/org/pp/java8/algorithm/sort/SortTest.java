@@ -6,7 +6,8 @@ import java.util.Random;
 
 /**
  * 排序算法可视化参考地址:
- * https://www.runoob.com/w3cnote_genre/algorithm
+ * https://www.cnblogs.com/onepixel/articles/7674659.html
+ * https://www.runoob.com/w3cnote/ten-sorting-algorithm.html
  */
 public class SortTest {
 
