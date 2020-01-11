@@ -1,8 +1,10 @@
 package org.pp.java8.algorithm.sort;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import org.junit.Assert;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 排序算法可视化参考地址:
@@ -19,7 +21,12 @@ public class SortTest {
         /* 插入排序 */
         Util.sorted(new InsertionArraySort()::sort, Util.arr);
 
+        /* 字符串匹配 */
 //        Util.strCmp("abcdefghcde", "cde");
+
+        /* 递归、排列组合问题、二进制反射格雷码 */
+        List<String> brgc = Util.BRGC(5);
+        System.out.println(brgc.size() == Math.pow(2, 5)); // int -> double 自动转型
     }
 
     static class Util {
@@ -71,6 +78,24 @@ public class SortTest {
             }
             Integer[] result = new Integer[list.size()];
             return list.toArray(result);
+        }
+
+        /**
+         * 生成长度为n的二进制反射格雷码
+         * @param n 格雷码位数
+         */
+        public static List<String> BRGC(int n) {
+            if (n == 1) {
+                return Stream.of("0", "1").collect(Collectors.toList());
+            }
+            List<String> L2 = BRGC(n - 1);
+            List<String> L1 = new ArrayList(L2); // backup list
+            Collections.reverse(L2); // L2 point reversed L1
+            L1 = L1.parallelStream().map(x-> "0" + x).collect(Collectors.toList());
+            L2 = L2.parallelStream().map(x-> "1" + x).collect(Collectors.toList());
+            L1.addAll(L2);
+            System.out.println(L1);
+            return L1;
         }
     }
 }
