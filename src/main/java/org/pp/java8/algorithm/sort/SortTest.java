@@ -13,10 +13,13 @@ public class SortTest {
 
     public static void main(String[] args) {
         Util.random();
-        Util.sorted(new BubbleArraySort</*类型推断*/>()::sort, Util.arr);
-//        sorted(new BubbleArraySort</*类型推断*/>()::sort, arr2);
+        /* 冒泡排序 */
+//        Util.sorted(new BubbleArraySort</*类型推断*/>()::sort, Util.arr);
+//        sorted(new BubbleArraySort</*类型推断*/>()::sort, Util.arr2);
+        /* 插入排序 */
+        Util.sorted(new InsertionArraySort()::sort, Util.arr);
 
-        Util.strCmp("abcdefghcde", "cde");
+//        Util.strCmp("abcdefghcde", "cde");
     }
 
     static class Util {
