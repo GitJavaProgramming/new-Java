@@ -22,10 +22,17 @@ public class SortTest {
 //        Util.randomDistinct(100, 110);
 
         /* 冒泡排序 */
-//        Util.sorted(new BubbleArraySort</*类型推断*/>()::sort, arr);
-//        Util.sorted(new BubbleArraySort</*类型推断*/>()::sort, arr2);
+//        sorted(new BubbleArraySort</*类型推断*/>()::sort, arr);
+//        sorted(new BubbleArraySort</*类型推断*/>()::sort, arr2);
         /* 插入排序 */
-        Util.sorted(new InsertionArraySort()::sort, arr);
+        sorted(new InsertionArraySort()::sort, arr);
+        // 接口形式是这样的情况下这里如何才能用ClassName::instanceMethodName这种形式？？
+        // 泛型类由于类型擦除不能通过ClassName::instanceMethodName这种形式引用吗？？？
+//        sorted(InsertionArraySort::sort, arr);
+    }
+
+    public static <T extends Comparable<T>> void sorted(ArraySortInterface<T> sort, T[] arr) {
+        sort.sort(arr);
     }
 
     static class Util {
@@ -94,10 +101,6 @@ public class SortTest {
                 return list;
             }
             return list.subList(0, n); // 取N个乱序数 (rand(s), rand(s) + n)--rand(s)<s and s+n<=m
-        }
-
-        public static <T> void sorted(ArraySortInterface sort, T[] arr) {
-            sort.sort(arr);
         }
     }
 }

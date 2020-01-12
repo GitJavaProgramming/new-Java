@@ -9,7 +9,7 @@ import java.util.Comparator;
  * Arrays  public static <T> void sort(T[] a, Comparator<? super T> c)
  */
 @FunctionalInterface
-public interface ArraySortInterface<T> {
+public interface ArraySortInterface<T extends Comparable<T>> {
 
     /**
      * 元素比较器 表达式接收一元操作符 转换函数 比较转换后的值U----U extends Comparable<? super U>
@@ -18,9 +18,11 @@ public interface ArraySortInterface<T> {
      * 但是java中的行为是动态分派的--继承与多态特性，在运行期确定具体类型
      *
      * 这样看来下面的写法是不是存在很大问题？？？ 接口常量 泛型擦除 表达式类型推断？？？
+     * 回答：表达式参数n被推断为Object类型，那为什么不能判断n的具体类型呢？？？
      *
      * Comparator函数式接口提供各种类型比较函数
      */
+    @Deprecated
     Comparator comparator = Comparator.comparing((/*Comparable*/ n) -> {
         if (n instanceof Number) {
             return ((Number) n).longValue();
@@ -31,12 +33,32 @@ public interface ArraySortInterface<T> {
         }
     });
 
+    @Deprecated
+    Comparator comparator2 = Comparator.comparing((Number n) -> {
+        /*if(n instanceof Integer) {
+            return n.intValue();
+        } else if (n instanceof Long){
+            return n.longValue();
+        } else if(n instanceof Float) {
+            return n.floatValue();
+        } else if(n instanceof Double) {
+            return n.doubleValue();
+        } else {
+            return n.shortValue();
+        }*/
+        return n.longValue();
+    });
+
     /**
      * 比较表中的两个元素大小，元素必须位数值型
      */
-    @SuppressWarnings({"必须为数值类型，否则会出现意外情况。", "小心使用，这个错误会被隐藏。"})
+//    @SuppressWarnings({"必须为数值类型，否则会出现意外情况。", "小心使用，这个错误会被隐藏。"})
+//    default boolean compare(T t1, T t2) {
+//        return comparator2.compare(t1, t2) < 1/*t1 < t2返回true*/;
+//    }
+
     default boolean compare(T t1, T t2) {
-        return comparator.compare(t1, t2) < 1/*t1 < t2返回true*/;
+        return t1.compareTo(t2) < 1;
     }
 
     /**

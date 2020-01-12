@@ -17,7 +17,7 @@ import java.util.Arrays;
  * // 最后得出时间代价 O(n^2)
  *
  */
-public class BubbleArraySort<T> implements ArraySortInterface<T> {
+public class BubbleArraySort<T extends Comparable<T>> implements ArraySortInterface<T> {
 
     public void sort(T[] arr) {
         System.out.println("  -- " + Arrays.toString(arr));
