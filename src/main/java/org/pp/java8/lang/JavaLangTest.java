@@ -9,15 +9,34 @@ public class JavaLangTest {
 
     public static void main(String[] args) {
 //        testMath();
-        testDataTypeConvert();
+//        testDataTypeConvert();
 //        testArray();
 //        testCollection();
 //        testFinals();
 //        testGenericArrayList();
 //        testCharset();
 //        testBinaryNumber();
-
 //        testHashCode();
+
+        testModifyRef();
+    }
+
+    private static void testModifyRef() {
+        // 集合引用修改
+        List<Integer> listA = new ArrayList<>();
+        List<Integer> listB = listA;
+        listA.add(1);
+        System.out.println(listA); // [1]
+        System.out.println(listB); // [1]
+        // 数组引用 固定长度 编译期确定类型 无法改动
+        int[] arrA = {1,2,3};
+        int[] arrB = arrA;
+        // String
+        String strA = "a";
+        String strB = strA;
+        strA += "b"; // 常量 + 编译期确定 参考Java语言规范 基于Java8 ch4.3.3、ch15.18.1
+        System.out.println(strA);
+        System.out.println(strB);
     }
 
     /**

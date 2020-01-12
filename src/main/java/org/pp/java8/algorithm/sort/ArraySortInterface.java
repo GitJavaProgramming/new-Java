@@ -4,7 +4,9 @@ import java.util.Comparator;
 
 /**
  * 线性表排序接口，函数式接口，提供lambda表达式支持
- * @param <T>
+ * 参考源码
+ * List  default void sort(Comparator<? super E> c)
+ * Arrays  public static <T> void sort(T[] a, Comparator<? super T> c)
  */
 @FunctionalInterface
 public interface ArraySortInterface<T> {
