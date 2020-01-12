@@ -12,13 +12,20 @@ import java.util.Comparator;
 public interface ArraySortInterface<T> {
 
     /**
-     * 元素比较器
+     * 元素比较器 表达式接收一元操作符 转换函数 比较转换后的值U----U extends Comparable<? super U>
+     * <T, U extends Comparable<? super U>>
+     * 接口中只能有常量 static final--这里不能包含泛型，最终类型推断只能确定一种类型 编译期间泛型擦除至上限
+     * 但是java中的行为是动态分派的--继承与多态特性，在运行期确定具体类型
+     *
+     * 这样看来下面的写法是不是存在很大问题？？？ 接口常量 泛型擦除 表达式类型推断？？？
+     *
+     * Comparator函数式接口提供各种类型比较函数
      */
-    Comparator comparator = Comparator.comparing((n) -> {
+    Comparator comparator = Comparator.comparing((/*Comparable*/ n) -> {
         if (n instanceof Number) {
             return ((Number) n).longValue();
-        } /*else if (n instanceof String) {
-            return ((String) n).toString();  为啥不能指定，函数声明在接口中???
+        } /*else if (n instanceof CharSequence) { // 编译错误 no instances of type valiables exist so that Integer conforms to long
+            return ((CharSequence)n).length();  // 为啥不能指定，函数声明在接口中???
         } */ else {
             throw new RuntimeException("必须为数值，此错误被隐藏，小心。");
         }
