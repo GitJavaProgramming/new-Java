@@ -25,7 +25,7 @@ public class SortTest {
 //        sorted(new BubbleArraySort</*类型推断*/>()::sort, arr);
 //        sorted(new BubbleArraySort</*类型推断*/>()::sort, arr2);
         /* 插入排序 */
-        sorted(new InsertionArraySort()::sort, arr);
+        sorted(new InsertionArraySort()::sort, arr); // == new InsertionArraySort().sort(arr);
         // 接口形式是这样的情况下这里如何才能用ClassName::instanceMethodName这种形式？？
         // 泛型类由于类型擦除不能通过ClassName::instanceMethodName这种形式引用吗？？？
 //        sorted(InsertionArraySort::sort, arr);
