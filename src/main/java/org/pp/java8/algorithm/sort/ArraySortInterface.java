@@ -7,7 +7,9 @@ import java.util.Comparator;
  * 参考源码
  * List  default void sort(Comparator<? super E> c)
  * Arrays  public static <T> void sort(T[] a, Comparator<? super T> c)
- */
+ *
+ * 本例限定上限 Comparable
+ * */
 @FunctionalInterface
 public interface ArraySortInterface<T extends Comparable<T>> {
 
@@ -18,7 +20,9 @@ public interface ArraySortInterface<T extends Comparable<T>> {
      * 但是java中的行为是动态分派的--继承与多态特性，在运行期确定具体类型
      *
      * 这样看来下面的写法是不是存在很大问题？？？ 接口常量 泛型擦除 表达式类型推断？？？
-     * 回答：表达式参数n被推断为Object类型，那为什么不能判断n的具体类型呢？？？
+     * 回答：表达式参数n被推断为Object类型，那为什么不能用instanceof判断n的具体类型呢？？？
+     * 对于回答给个参考：Java语言规范 基于java8  ch5.5 类型转换上下文 ch15.6 强制类型转换 ch15.20.2 instanceof操作符
+     * ch4.10.4 最低上边界 4.11 类型使用
      *
      * Comparator函数式接口提供各种类型比较函数
      */
