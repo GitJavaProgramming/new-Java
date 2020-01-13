@@ -3,7 +3,7 @@ package org.pp.java8.algorithm.sort;
 import java.util.Arrays;
 
 /**
- * Java实现 合并排序--递归
+ * Java实现 合并排序--分治、递归
  * 描述：对于需要排序的数组A[0...n-1],合并排序把他一分为二：A[0...floor(n/2)-1]和A[floor(n/2)...n-1]
  * 对每个子数组递归排序，然后把排序好的子数组合并为一个有序数组
  * 递归排序算法：MergeSort(A[0...n-1])
@@ -53,7 +53,7 @@ public class MergeArraySort implements ArraySortInterface<Integer> {
         int i = 0, j = 0, k = 0;
         int p = arrB.length;
         int q = arrC.length;
-        while (i < p && j < q) {
+        while (i < p && j < q) { // i、j分治，取决于B、C数组元素的大小
             if (arrB[i].compareTo(arrC[j]) < 1) {
                 arr[k++] = arrB[i++];
             } else {
