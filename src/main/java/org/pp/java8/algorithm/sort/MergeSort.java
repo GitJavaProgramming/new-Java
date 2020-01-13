@@ -23,7 +23,7 @@ import java.util.Arrays;
  *   copy C[j...q-1] to A[k...p+q-1]
  * else copy B[i...p-1] to A[k...p+q-1]
  */
-public class MergeArraySort implements ArraySortInterface<Integer> {
+public class MergeSort implements ArraySortInterface<Integer> {
 
     @Override
     public void sort(Integer... arr) {

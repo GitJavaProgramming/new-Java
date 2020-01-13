@@ -19,16 +19,23 @@ public class SortTest {
 //        Util.randomDistinct(100, 110);
 
         /* 冒泡排序 */
-//        sorted(new BubbleArraySort</*类型推断*/>()::sort, arr);
-//        sorted(new BubbleArraySort</*类型推断*/>()::sort, arr2);
+//        sorted(new BubbleSort</*类型推断*/>()::sort, arr);
+//        sorted(new BubbleSort</*类型推断*/>()::sort, arr2);
         /* 插入排序 */
-//        sorted(new InsertionArraySort()::sort, arr); // == new InsertionArraySort().sort(arr);
+//        sorted(new InsertionSort()::sort, arr); // == new InsertionSort().sort(arr);
         // 接口形式是这样的情况下这里如何才能用ClassName::instanceMethodName这种形式？？
         // 泛型类由于类型擦除不能通过ClassName::instanceMethodName这种形式引用吗？？？
-//        sorted(InsertionArraySort::sort, arr);
+//        sorted(InsertionSort::sort, arr);
 
-        System.out.println(Arrays.toString(arr));
-        sorted(new MergeArraySort()::sort, arr);
+        /*************************
+         * 分治思想
+         * **********************/
+        /* 合并排序 */
+//        System.out.println(Arrays.toString(arr));
+//        sorted(new MergeSort()::sort, arr);
+//        Util.randomRepeat();
+        sorted(new QuickSort()::sort, arr);
+
     }
 
     public static <T extends Comparable<T>> void sorted(ArraySortInterface<T> sort, T[] arr) {

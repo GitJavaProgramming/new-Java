@@ -1,6 +1,6 @@
 package org.pp.java8.util;
 
-import org.pp.java8.algorithm.sort.MergeArraySort;
+import org.pp.java8.algorithm.sort.MergeSort;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
@@ -92,6 +92,6 @@ public class ReflectionUtl {
 
 
     public static void main(String[] args) {
-        getSuperInterfaceGenericType(MergeArraySort.class);
+        getSuperInterfaceGenericType(MergeSort.class);
     }
 }

@@ -15,7 +15,7 @@ import java.util.Arrays;
  *       j <- j-1
  *     A[j+1] <- v
  */
-public class InsertionArraySort<T extends Comparable<T>> implements ArraySortInterface<T> {
+public class InsertionSort<T extends Comparable<T>> implements ArraySortInterface<T> {
 
     /**
      * 插入排序，考虑正好是降序排列最差效率和非降序的最优效率
