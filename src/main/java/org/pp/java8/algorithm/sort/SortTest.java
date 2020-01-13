@@ -1,9 +1,6 @@
 package org.pp.java8.algorithm.sort;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * 排序算法可视化参考地址:
@@ -25,10 +22,13 @@ public class SortTest {
 //        sorted(new BubbleArraySort</*类型推断*/>()::sort, arr);
 //        sorted(new BubbleArraySort</*类型推断*/>()::sort, arr2);
         /* 插入排序 */
-        sorted(new InsertionArraySort()::sort, arr); // == new InsertionArraySort().sort(arr);
+//        sorted(new InsertionArraySort()::sort, arr); // == new InsertionArraySort().sort(arr);
         // 接口形式是这样的情况下这里如何才能用ClassName::instanceMethodName这种形式？？
         // 泛型类由于类型擦除不能通过ClassName::instanceMethodName这种形式引用吗？？？
 //        sorted(InsertionArraySort::sort, arr);
+
+        System.out.println(Arrays.toString(arr));
+        sorted(new MergeArraySort()::sort, arr);
     }
 
     public static <T extends Comparable<T>> void sorted(ArraySortInterface<T> sort, T[] arr) {

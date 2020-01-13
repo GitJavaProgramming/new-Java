@@ -8,7 +8,7 @@ import java.util.Comparator;
  * List  default void sort(Comparator<? super E> c)
  * Arrays  public static <T> void sort(T[] a, Comparator<? super T> c)
  *
- * 本例限定上限 Comparable
+ * 本例限定上限 Comparable让元素T之间可以比较，如果不指定上限Comparable，需要自己实现比较器Comparator
  * */
 @FunctionalInterface
 public interface ArraySortInterface<T extends Comparable<T>> {
