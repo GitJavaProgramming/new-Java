@@ -29,6 +29,19 @@ import java.util.Arrays;
  *   exchange(A[i+1], A[r])
  *   return i+1
  *
+ * 快速排序的性能  《算法导论》 P88
+ * QUICKSORT的运行时间由花在过程PARTITION上的时间所决定，每当PARTITION过程被调用时，就要选出一个主元元素。后续对QUICKSORT和
+ * PARTITION的各次递归调用中，都不会包含该元素。在整个快排算法中，至多只可能调用PARTITION过程n次。
+ * PARTITION中和主元比较的总次数决定了算法的运行时间。对于数组A[0...n]，T(n)表示n次PARTITION过程的最坏时间
+ * 如果每次划分都产生A[1...n-1]和A[0]两个子问题，那么具有最差划分效率，此时快排时间代价Θ(n^2) 递推式如下：
+ *   T[n] = T[n-1] + T[0] + Θ(n) = T[n-1] + Θ(n) =>（推导出）T(n) = Θ(n^2)
+ * 如果每次划分得到的两个子问题大小为floor(n/2)、floor(n/2)-1，这时具有最佳划分效率，此时时间代价为O(nlgn)
+ *   T[n] <= 2T(n/2) + Θ(n) => T(n) = O(nlgn)
+ * 如果每次划分都出现相同比例的子问题，那么称为平衡的划分，此时总的运行时间为O(nlgn)
+ * 运行时间的求解  参考  《算法导论》 P93
+ * 级数求和 -> 总的比较次数 -> 求期望值（第一次选取A[0]或A[n-1]时，它们将会进行比较，往后就不会再比较）
+ * E[X] => O(nlgn)
+ *
  * 下例是一个Java实现的快排
  */
 public class QuickSort implements ArraySortInterface<Integer> {
@@ -50,13 +63,14 @@ public class QuickSort implements ArraySortInterface<Integer> {
     }
 
     /**
-     * 一种划分算法
+     * 一种划分算法：对于数组A[p...r]总是取A[r]作为主元进行划分
+     * 其他划分：Hoare划分、三数取中（随机主元的变式）
      */
     private int partition(Integer[] arr, int p, int r) {
-        int x = arr[r]; // 选择数组最后一个元素进行比较来确定主元
+        int x = arr[r]; // 选择数组最后一个元素作为主元进行比较，
         int i = p - 1;
         for (int j = p; j < r; j++) { // 一次遍历会近似排序，分成较小无序和较大的无序两个数组
-            if (arr[j] <= x) {
+            if (arr[j] <= x) { // 和主元比较
                 i++; // 较小元素数组的尾部指针，使用指针不需要额外栈空间存放较小元素数组，只需要交换
                 swap(arr, i, j); // 元素交换，较小元素
                 // 没打印一次就意味着发生一次元素交换
