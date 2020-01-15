@@ -82,7 +82,7 @@ public class QuickSort implements ArraySortInterface<Integer> {
         int x = arr[r]; // 选择数组最后一个元素作为主元进行比较，
         int i = p - 1;
         for (int j = p; j < r; j++) { // 一次遍历会近似排序，分成较小无序和较大的无序两个数组
-            if (arr[j] <= x) { // 和主元比较
+            if (arr[j] <= x) { // 和主元比较，相等也交换-->减小问题规模(交换之后就不会再比较)
                 i++; // 较小元素数组的尾部指针，使用指针不需要额外栈空间存放较小元素数组，只需要交换
                 swap(arr, i, j); // 元素交换，较小元素
                 // 没打印一次就意味着发生一次元素交换

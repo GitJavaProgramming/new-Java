@@ -1,6 +1,8 @@
 package org.pp.java8.algorithm.sort;
 
-import java.util.*;
+import org.pp.java8.algorithm.random.MathRandom;
+
+import java.util.List;
 
 /**
  * 排序算法可视化参考地址:
@@ -44,11 +46,12 @@ public class SortTest {
 
     static class Util {
 
+
         /**
          * 数组存放生成的N个随机数，生成的数可重复
          */
         public static void randomRepeat() {
-            Random rnd = new Random();
+            java.util.Random rnd = new java.util.Random();
             int i = 0;
             while (i < N) {
                 arr[i++] = rnd.nextInt(N);
@@ -83,31 +86,8 @@ public class SortTest {
          * @param m 结束值
          */
         public static void randomDistinct(int s/*from 包含 s<m and m-s>=N*/, int m/*to 不包含*/) {
-            List<Integer> list = randomDistinct(s, m, N);
+            List<Integer> list = MathRandom.randomIntegerListDistinct(s, m, N);
             list.toArray(arr);
-        }
-
-        /**
-         * 生成整数数值范围在[s, m)区间的m-s个不同的随机数，从中取出n个数
-         * @param s 数值开始值 包含这个值s
-         * @param m 数值结束值 不包含m
-         * @param n 取n个数
-         * @return 取到的集合
-         */
-        private static List<Integer> randomDistinct(int s, int m, int n) {
-            if ((s > m) || (m - s < n)) {
-                throw new IllegalArgumentException("参数s必须不大于参数m的值,并且区间[s,m)值不小于n");
-            }
-            List<Integer> list = new ArrayList<>(m - s);
-            int index = s;
-            while (index < m) {
-                list.add(index++);
-            }
-            Collections.shuffle(list); // 乱序
-            if (list.size() == n) {
-                return list;
-            }
-            return list.subList(0, n); // 取N个乱序数 (rand(s), rand(s) + n)--rand(s)<s and s+n<=m
         }
     }
 }

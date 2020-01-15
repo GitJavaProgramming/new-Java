@@ -39,7 +39,7 @@ Iterable  迭代器接口
     Map
         HashMap Map.Entry Node数组
         TreeMap 平衡二叉树-红黑树
-            如果一颗二叉树除了最下面一层可能不满外，其他各层都是满的，该二叉树就是平衡二叉树。
+            红黑树的平衡定义与AVL树平衡定义
 
      红黑树参考：
          https://blog.csdn.net/v_JULY_v/article/details/6105630
