@@ -11,9 +11,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * 第1个 T reduce(T identity, BinaryOperator<T> accumulator);
  * 第2个 Optional<T> reduce(BinaryOperator<T> accumulator);
  * 第3个 <U> U reduce(U identity,
- * BiFunction<U, ? super T, U> accumulator, // 累加器  一元操作符
- * BinaryOperator<U> combiner);  // 合并器  二元操作符
- * <p>
+ *   BiFunction<U, ? super T, U> accumulator, // 累加器  二元操作符
+ *   BinaryOperator<U> combiner);  // 合并器  二元操作符
  * 这个规约结果和下面的相同 但是不强制按顺序执行
  * U result = identity;
  * *     for (T element : this stream)

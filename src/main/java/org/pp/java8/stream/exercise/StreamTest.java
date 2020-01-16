@@ -7,20 +7,20 @@ import java.util.stream.Stream;
 
 public class StreamTest {
     public static void main(String[] args) {
-        System.out.println(addUp(Stream.of(1, 2, 3, 4)));
+//        System.out.println(addUp(Stream.of(1, 2, 3, 4)));
 //        Stream.of(addUp(Stream.of(1, 2, 3, 4))).forEach(System.out::println);
 
 
-        int sum = Stream.of(1, 2, 3, 4).reduce(0, (t, u) -> {
+        int sum = Stream.of(1, 2, 3, 4)/*.parallel()*/.reduce(1, (t, u) -> { // 规约操作
             System.out.println("t = " + t);
             System.out.println("u = " + u);
             System.out.println("t + u = " + (t + u));
             return t + u;  // t保存中间结果，u为（元素-流）元素
-        }, (a, b) -> {
-            System.out.println("a=" + a);
-            System.out.println("b=" + b);
-            System.out.println("a * b = " + a * b);
-            return a * b;
+        }, (t, u) -> {
+            System.out.println("a=" + t);
+            System.out.println("u=" + u);
+            System.out.println("a * u = " + t * u);
+            return t * u;
         });
         System.out.println("sum = " + sum);
 
