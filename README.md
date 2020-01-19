@@ -7,30 +7,9 @@ Java8语法与新api 网络编程 并发编程 数据结构和算法---求最佳
     │      └─pp
     │          ├─java8
     │          │  ├─algorithm  算法--问题分类与分析
-    │          │  │  └─sort
     │          │  ├─concurrent  并发编程
-    │          │  │  ├─annotation
-    │          │  │  ├─asimpledemo
-    │          │  │  │  ├─lock
-    │          │  │  │  └─semaphore
-    │          │  │  ├─lock   Java中的锁与同步
-    │          │  │  │  └─aqs
-    │          │  │  ├─thread
-    │          │  │  ├─threadpool
-    │          │  │  └─util
-    │          │  ├─datastruct  数据结构 ADT与实现 UML类图
-    │          │  │  ├─linear  线性结构  双向链表 栈和队列
-    │          │  │  ├─nonlinear  树、图  （满/完全/平衡）二叉树、优先队列（linear）/堆
-    │          │  │  └─test  测试类 demo
-    │          │  ├─javabean  java.beans.*  测试
-    │          │  ├─lambda  lambda表达式语法
+    │          │  ├─functional  函数式编程
     │          │  ├─lang   Java语言拾遗
-    │          │  ├─stream   流式API、函数式编程的本质
-    │          │  │  ├─demo
-    │          │  │  ├─exercise
-    │          │  │  │  └─java8functional
-    │          │  │  │      └─model
-    │          │  │  └─readme
     │          │  └─util  工具类
     │          └─mq   消息队列
     │              └─kafka
