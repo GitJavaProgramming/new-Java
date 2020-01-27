@@ -45,7 +45,7 @@ Iterable  迭代器接口
          https://blog.csdn.net/v_JULY_v/article/details/6105630
          其中包括红黑树的概念、红黑树的插入、删除、旋转修正
 
-序列化接口 包下面所有类基本都实现了Serializable接口，可以序列化
+序列化接口 Java.util包下面所有类基本都实现了Serializable接口，可以序列化
     实现 Serializable 接口允许对象序列化，以保存和恢复对象的全部状态，并且允许类在写入流时的状态和从流读取时的状态之间变化。
     它自动遍历对象之间的引用，保存和恢复全部图形。
 
