@@ -2,6 +2,8 @@ package org.pp.java8.lang;
 
 import org.pp.java8.algorithm.datastruct.linear.GenericArrayList;
 
+import java.io.UnsupportedEncodingException;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -14,11 +16,11 @@ public class JavaLangTest {
 //        testCollection();
 //        testFinals();
 //        testGenericArrayList();
-//        testCharset();
+        testCharset();
 //        testBinaryNumber();
 //        testHashCode();
 
-        testModifyRef();
+//        testModifyRef();
     }
 
     private static void testModifyRef() {
@@ -167,6 +169,19 @@ public class JavaLangTest {
 //        char c = 65536; // 编译错误
         char c = 65535;
         System.out.println("最大的Unicode字符：" + new String(new char[]{c})); // 结果：￿ 文件utf-8编码，可以看到是这个字符，试试其他字符集编码文件！
+
+        // 图谱-推文中
+        String ss = "https://www.raychase.net/wp-content/uploads/2019/09/%E5%9B%BE%E8%B0%B1-%E6%8E%A8%E6%96%87%E4%B8%AD.jpeg";
+        String ss2 = "图谱";
+        try {
+//            String rString = URLEncoder.encode(ss2, "gb2312");
+            String rString = URLEncoder.encode(ss2, "utf-8");
+            System.out.println(rString);
+            rString = URLDecoder.decode(ss, "utf-8");
+            System.out.println(rString);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

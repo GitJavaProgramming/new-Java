@@ -3,6 +3,7 @@
  * http://zh.lucida.me/blog/java-8-lambdas-insideout-language-features/
  * http://zh.lucida.me/blog/java-8-lambdas-inside-out-library-features/
  * https://cloud.tencent.com/developer/article/1497544
+ * https://www.ibm.com/developerworks/cn/java/j-understanding-functional-programming-1/index.html
  *
  * 流的创建 这里说的创建为顶层操作 给出的方法请查阅源码理解具体实现
  * Collection
