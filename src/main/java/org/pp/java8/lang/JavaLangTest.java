@@ -3,7 +3,10 @@ package org.pp.java8.lang;
 import org.pp.java8.algorithm.datastruct.linear.GenericArrayList;
 
 import java.io.UnsupportedEncodingException;
-import java.net.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -16,11 +19,33 @@ public class JavaLangTest {
 //        testCollection();
 //        testFinals();
 //        testGenericArrayList();
-        testCharset();
+//        testCharset();
 //        testBinaryNumber();
 //        testHashCode();
 
 //        testModifyRef();
+//        testSingleton(Singleton.class);
+//        testSingleton(Singleton2.class);
+        testSingleton(Singleton3.class);
+        Singleton3.getInstance();// 延迟初始化的危害：可以用反射破坏单例
+        testSingleton(Singleton3.class);
+    }
+
+    public static <T> void testSingleton(Class<T> clazz) {
+        Constructor constructor = null;
+        try {
+            constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            T singleton = (T) constructor.newInstance();  // 反射破坏单例模式
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void testModifyRef() {
