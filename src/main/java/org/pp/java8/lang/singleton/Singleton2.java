@@ -1,4 +1,4 @@
-package org.pp.java8.lang;
+package org.pp.java8.lang.singleton;
 
 public class Singleton2 {
 

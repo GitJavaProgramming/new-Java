@@ -1,6 +1,8 @@
 package org.pp.java8.lang;
 
 import org.pp.java8.algorithm.datastruct.linear.GenericArrayList;
+import org.pp.java8.lang.singleton.Singleton;
+import org.pp.java8.lang.singleton.Singleton3;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
@@ -25,10 +27,11 @@ public class JavaLangTest {
 
 //        testModifyRef();
 //        testSingleton(Singleton.class);
+        Singleton.getInstance().cloneObj();
 //        testSingleton(Singleton2.class);
-        testSingleton(Singleton3.class);
-        Singleton3.getInstance();// 延迟初始化的危害：可以用反射破坏单例
-        testSingleton(Singleton3.class);
+//        testSingleton(Singleton3.class);
+//        Singleton3.getInstance();// 延迟初始化的危害：可以用反射破坏单例
+//        testSingleton(Singleton3.class);
     }
 
     public static <T> void testSingleton(Class<T> clazz) {
@@ -37,6 +40,7 @@ public class JavaLangTest {
             constructor = clazz.getDeclaredConstructor();
             constructor.setAccessible(true);
             T singleton = (T) constructor.newInstance();  // 反射破坏单例模式
+//            singleton.clone();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
