@@ -21,13 +21,13 @@ public class JavaLangTest {
 //        testCollection();
 //        testFinals();
 //        testGenericArrayList();
-//        testCharset();
+        testCharset();
 //        testBinaryNumber();
 //        testHashCode();
 
 //        testModifyRef();
 //        testSingleton(Singleton.class);
-        Singleton.getInstance().cloneObj();
+//        Singleton.getInstance().cloneObj();
 //        testSingleton(Singleton2.class);
 //        testSingleton(Singleton3.class);
 //        Singleton3.getInstance();// 延迟初始化的危害：可以用反射破坏单例
@@ -208,6 +208,17 @@ public class JavaLangTest {
             System.out.println(rString);
             rString = URLDecoder.decode(ss, "utf-8");
             System.out.println(rString);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String s1 = "²»ºÏ·¨µÄÈÕÆÚ¸ñÊ½»òÕßÈÕÆÚ³¬³öÏÞ¶¨·¶Î§,ÐèÒª³·ÏúÂð?";
+//            不合法的日期格式或者日期超出限定范围,需要撤销吗?
+            byte[] bytes1 = s1.getBytes(Charset.forName("utf-8"));
+            String s2 = new String(bytes1, "gbk");
+
+            System.out.println("s2= " + s2);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
