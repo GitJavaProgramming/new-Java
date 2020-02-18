@@ -1,8 +1,6 @@
 package org.pp.java8.lang;
 
 import org.pp.java8.algorithm.datastruct.linear.GenericArrayList;
-import org.pp.java8.lang.singleton.Singleton;
-import org.pp.java8.lang.singleton.Singleton3;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
