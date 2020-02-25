@@ -1,8 +1,5 @@
 package org.pp.java8.concurrent.lock.aqs;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Stream;
 
@@ -41,7 +38,7 @@ public class CountDownLatchTest {
             this.latch = latch;
         }
 
-        public AThread(@Nullable ThreadGroup group, @NotNull String name, CountDownLatch latch) {
+        public AThread(ThreadGroup group, String name, CountDownLatch latch) {
             super(group, name);
             this.latch = latch;
         }
