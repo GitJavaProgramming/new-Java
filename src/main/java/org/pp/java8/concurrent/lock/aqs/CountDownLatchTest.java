@@ -1,6 +1,7 @@
 package org.pp.java8.concurrent.lock.aqs;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 /**
@@ -45,12 +46,17 @@ public class CountDownLatchTest {
 
         @Override
         public void run() {
+            try {
+                TimeUnit.MILLISECONDS.sleep(500);
+            } catch (InterruptedException e) {
+                System.out.println("sleep interrupted.");
+            }
             latch.countDown(); // 递减锁存器的计数，如果计数到达零，则释放所有等待的线程。
-//            try {
-//                TimeUnit.SECONDS.sleep(3);
-//            } catch (InterruptedException e) {
-//                System.out.println("sleep interrupted.");
-//            }
+            try {
+                TimeUnit.SECONDS.sleep(3); // 长时间任务 使线程保持非终止状态
+            } catch (InterruptedException e) {
+                System.out.println("sleep interrupted.");
+            }
         }
     }
 }

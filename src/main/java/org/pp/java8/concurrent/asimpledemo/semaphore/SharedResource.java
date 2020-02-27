@@ -12,7 +12,7 @@ public class SharedResource {
     private static volatile char[] chars; // 操作的字符数组
     private static volatile int strIndex = 0; // 字符数组索引
 
-    public SharedResource(int threadNum, int printCount) {
+    public SharedResource(int threadNum, int printCount) { // 限制线程获取资源的顺序
         this.threadNum = threadNum;
         this.printCount = printCount;
         generateCharArray();

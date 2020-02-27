@@ -40,7 +40,7 @@ public class ThreadJoinTest {
                 TimeUnit.SECONDS.sleep(4);
             } catch (InterruptedException e) {
                 System.out.println("A sleep interrupted...");
-                System.out.println("A is " + Thread.currentThread().getState());
+//                System.out.println("A is " + Thread.currentThread().getState());
             }
             System.out.println("AAAAAAAA finished");
         }

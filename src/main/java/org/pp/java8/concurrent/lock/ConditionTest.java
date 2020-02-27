@@ -25,10 +25,10 @@ public class ConditionTest {
     }
 
     @NotThreadSafe
-    static class BoundQueue<T> {
+    static final class BoundQueue<T> {
         private final T[] arr;
         private final int capacity;
-        private int size = 0; // 队列元素个数
+        private volatile int size = 0; // 队列元素个数
         /* 可重入独占锁--一个线程持有锁，其他请求锁的线程等待BLOCKED状态 */
         private Lock lock = new ReentrantLock();
         private Condition condition = lock.newCondition();
@@ -92,7 +92,7 @@ public class ConditionTest {
                 if (isEmpty()) {
                     condition.await();
                 }
-                T t = arr[--size]; // 这里还可能出现数组小标越界 size = -1
+                T t = arr[--size];
                 System.out.println("take item : " + t);
                 condition.signal();
                 return t;
@@ -104,7 +104,7 @@ public class ConditionTest {
 
     static class ThreadA extends Thread {
         private BoundQueue queue;
-        private int queueLen;
+        private final int queueLen;
         private int count;
 
         public ThreadA(BoundQueue queue) {

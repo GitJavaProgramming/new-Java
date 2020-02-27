@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
  * Semaphore 用于控制并发线程数量，特别是公用资源有限的场景 比如数据库连接池
  */
 public class SemaphoreTest {
-    private static final int MAX_CON = Runtime.getRuntime().availableProcessors() << 1;
-    private static final ExecutorService service = Executors.newFixedThreadPool(MAX_CON);
+    private static final int DB_CPU = Runtime.getRuntime().availableProcessors() << 1;
+    private static final ExecutorService service = Executors.newFixedThreadPool(DB_CPU);
 
     public static void main(String[] args) throws InterruptedException {
         Semaphore semaphore = new Semaphore(3); // 并发执行许可
-        for (int i = 0; i < MAX_CON; i++) {
+        for (int i = 0; i < DB_CPU; i++) {
             service.execute(() -> {
                 String name = Thread.currentThread().getName();
                 try {
@@ -29,7 +29,7 @@ public class SemaphoreTest {
                     if(semaphore.availablePermits() == 0) {
                         System.out.println(name + "*************************************");
                     }
-                    semaphore.release();
+                    semaphore.release(); // 释放许可，被在等待获得许可的线程拿到
                     if(semaphore.availablePermits() == 0) {
                         System.out.println(name + "release permits, no permits.");
                     }
