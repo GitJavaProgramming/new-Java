@@ -10,7 +10,7 @@ public class ThreadTest {
     public static void main(String[] args) {
 //        System.out.println(ThreadTest.class.getResource("")); // 当前类在文件系统中的绝对路径
 //        printThreadInfo(Thread.currentThread());
-//        threadFieldTest();
+        threadFieldTest();
 
 //        threadMethodTest();
 //        System.out.println(Thread.currentThread().getName() + " run here.");
@@ -25,11 +25,14 @@ public class ThreadTest {
     public static void threadFieldTest() {
         Thread thread = new Thread(() -> {
             Thread currThread = Thread.currentThread();
-            printThreadInfo(currThread);
+            long id = currThread.getId(); // id
+//            printThreadInfo(currThread);
+            System.out.println(id); // 可以打印
         });
         System.out.println("Thread instantiate State :" + thread.getState());
         thread.setDaemon(true); // before start setter，这里设置为true时不打印线程信息 JDK1.8.0_221测试
         thread.start();
+//        printThreadInfo(thread);
     }
 
     /**
@@ -44,8 +47,8 @@ public class ThreadTest {
         int priority = thread.getPriority(); // priority
         boolean daemon = thread.isDaemon(); // daemon
 
-        ThreadGroup threadGroup = thread.getThreadGroup();
-        threadGroup.list(); // 查阅toString list() 源码--调用Thread.toString 输出到控制台
+//        ThreadGroup threadGroup = thread.getThreadGroup();
+//        threadGroup.list(); // 查阅toString list() 源码--调用Thread.toString 输出到控制台
 
         List<Object> fieldList = new ArrayList<>(); // Object类型参数 列表 忽视泛型
         fieldList.add(name);

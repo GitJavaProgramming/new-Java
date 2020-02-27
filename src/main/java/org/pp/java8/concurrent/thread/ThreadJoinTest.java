@@ -3,23 +3,33 @@ package org.pp.java8.concurrent.thread;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 两个线程A，B，B等待A执行完再执行后续操作，主线程中断A
- * 一种可能的结果（1，2语句顺序可能不一样）：
- * 1 B run and wait A finished.
- * 2 A running here.
- * B interrupt -->> A join interrupted...
- * B running here.
- * AAAAAAAA finished
+ * 两个线程A，B
+ * B等待A执行完再执行后续操作，主线程中断A
  */
 public class ThreadJoinTest {
+
+    /**
+     * 一种可能的运行结果
+     * B run and wait A finished.
+     * A running here.
+     * B interrupt -->> A join interrupted...
+     * A sleep interrupted...
+     * A is RUNNABLE
+     * AAAAAAAA finished
+     * a.state = BLOCKED
+     * B running here.
+     *
+     * FAQ 为什么A的状态会出现BLOCKED
+     *
+     */
     public static void main(String[] args) throws InterruptedException {
         A a = new A();
         B b = new B(a);
-        a.start();
         b.start();
+        a.start();
         TimeUnit.SECONDS.sleep(1);
         a.interrupt();
-//        b.interrupt(); // 中断A.join操作，捕获异常处理
+        b.interrupt(); // 中断A.join操作，捕获异常处理
     }
 
     static class A extends Thread {
@@ -51,7 +61,8 @@ public class ThreadJoinTest {
                 a.join(); // 等A执行完
             } catch (InterruptedException e) {
                 System.out.println("B interrupt -->> A join interrupted...");
-                System.out.println("a.state = " + a.getState());
+//                a.interrupt();
+                System.out.println("a.state = " + a.getState()); // 这里可能出现BLOCKED
             }
             System.out.println("B running here.");
         }

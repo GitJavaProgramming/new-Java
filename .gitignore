@@ -1,0 +1,11 @@
+
+target/classes/META-INF/org.pp.corejava.kotlin_module
+target/classes/org/pp/java8/async/vertx/EventBusCase$Holder.class
+target/classes/org/pp/java8/async/vertx/EventBusCase.class
+target/classes/org/pp/java8/async/vertx/FirstVertX.class
+target/classes/org/pp/java8/async/vertx/HttpCase.class
+target/classes/org/pp/java8/async/vertx/MyVerticle.class
+target/classes/org/pp/java8/async/vertx/TcpCase.class
+target/classes/org/pp/java8/async/vertx/FirstVertX.class
+*.class
+/.idea/

@@ -22,31 +22,11 @@ public class ThreadInterruptTest {
 
     public static void main(String[] args) throws InterruptedException {
         interruptTest();
+//        threadInterruptedTest();
+//        isInterruptedTest();
     }
 
-    public static void interruptTest() throws InterruptedException {
-        Runnable r1 = () -> {
-            String threadName = Thread.currentThread().getName();
-            try {
-                System.out.println(threadName + " time before sleep :" + LocalDateTime.now());
-                TimeUnit.SECONDS.sleep(3);
-            } catch (InterruptedException e) {
-                System.out.println(threadName + " time was interrupted :" + LocalDateTime.now());
-                System.out.println(threadName + " sleep was interrupted.");
-            }
-        };
-        Thread thread = new Thread(r1);
-        Thread thread2 = new Thread(() -> {
-//            System.out.println(this);
-            long n1 = 0;
-            while (n1++ < Math.sqrt(Long.MAX_VALUE)) {
-//                Thread.currentThread().isInterrupted();
-                if (Thread.interrupted()) { // 中断时第一次调用返回true并且清除中断标识
-                    System.out.println(" ====>> " + Thread.interrupted()); // 以后调用总是false，除非再次触发中断
-                }
-            }
-            System.out.println("finished run.");
-        });
+    public static void isInterruptedTest() {
         Thread thread3 = new Thread() {
 
             private volatile boolean closed = false;
@@ -66,29 +46,48 @@ public class ThreadInterruptTest {
                 System.out.println("thread3 exited.");
             }
         };
-        thread.start();
-        thread2.start();
         thread3.start();
+        thread3.interrupt();
+    }
+
+    public static void threadInterruptedTest() {
+        Thread thread2 = new Thread(() -> {
+//            System.out.println(this);
+            long n1 = 0;
+            while (n1++ < Math.sqrt(Long.MAX_VALUE)) {
+//                Thread.currentThread().isInterrupted();
+                if (Thread.interrupted()) { // 中断时第一次调用返回true并且清除中断标识
+                    System.out.println(" ====>> " + Thread.interrupted()); // 以后调用总是false，除非再次触发中断
+                }
+            }
+            System.out.println("finished run.");
+        });
+        thread2.start();
+        System.out.println("thread2 isInterrupted : " + thread2.isInterrupted()); // false
+        thread2.interrupt();
+        System.out.println("thread2 isInterrupted : " + thread2.isInterrupted()); // true
+    }
+
+    public static void interruptTest() throws InterruptedException {
+        Runnable r1 = () -> {
+            String threadName = Thread.currentThread().getName();
+            try {
+                System.out.println(threadName + " time before sleep :" + LocalDateTime.now());
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+//                Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+                System.out.println(threadName + " time was interrupted :" + LocalDateTime.now());
+                System.out.println(threadName + " sleep was interrupted.");
+            }
+        };
+        Thread thread = new Thread(r1);
+        thread.start();
         TimeUnit.SECONDS.sleep(2);
         System.out.println("thread state:" + thread.getState()); // TIMED_WAITING
         System.out.println("thread isInterrupted : " + thread.isInterrupted()); // false 没被中断
-        System.out.println("thread2 isInterrupted : " + thread2.isInterrupted()); // false
         thread.interrupt(); // 中断thread的等待状态
-        thread2.interrupt();
-        thread3.interrupt();
         System.out.println("thread isInterrupted : " + thread.isInterrupted()); // false 清除中断标识位
-        System.out.println("thread2 isInterrupted : " + thread2.isInterrupted()); // true
-
-        /**
-         * 一种可能的执行结果
-         * Thread-0 time before sleep :2019-12-30T13:32:43.370
-         * thread state:TIMED_WAITING
-         * Thread-0 time was interrupted :2019-12-30T13:32:45.323
-         * Thread-0 sleep was interrupted.
-         * thread.interrupt() thread state:RUNNABLE
-         */
         System.out.println("thread.interrupt() thread state:" + thread.getState()); // 任何可能状态catch块处理时间限制
-
     }
 
 }

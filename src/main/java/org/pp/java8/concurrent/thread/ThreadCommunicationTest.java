@@ -8,12 +8,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadCommunicationTest {
 
-    private static volatile boolean flag = false;
+    private static volatile boolean stop = false; /*while(stop)*/
 
     public static void main(String[] args) {
         Object objLock = new Object();
-        new WaitThread(objLock).start();
         new NotifyThread(objLock).start();
+        new WaitThread(objLock).start();
     }
 
     static class WaitThread extends Thread {
@@ -27,13 +27,11 @@ public class ThreadCommunicationTest {
         @Override
         public void run() {
             synchronized (objLock) {
-                if (!flag) {
-                    System.out.println("release lock and waiting to hold lock.");
-                    try {
-                        objLock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                System.out.println("release lock and waiting to hold lock.");
+                try {
+                    objLock.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 System.out.println("hold lock and run here.");
             }
@@ -50,12 +48,13 @@ public class ThreadCommunicationTest {
 
         @Override
         public void run() {
+            Thread.yield();
+            try {
+                TimeUnit.SECONDS.sleep(2); // 先等待
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             synchronized (objLock) {
-                try {
-                    TimeUnit.SECONDS.sleep(2);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 System.out.println("唤醒在对象监视器锁上等待的一个线程！");
                 objLock.notify(); // 唤醒所有在监视器上等待的线程
             }
