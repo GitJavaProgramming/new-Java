@@ -7,21 +7,17 @@
     <groupId>org.pp.javacore</groupId>
     <artifactId>org.pp.javacore</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
+    <properties>
+        <v.apache.ommons-lang3>3.9</v.apache.ommons-lang3>
+    </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${v.apache.ommons-lang3}</version>
+        </dependency>
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
@@ -34,11 +30,11 @@
             <version>1.18.10</version>
             <scope>provided</scope>
         </dependency>
-        <!-- alibaba fastjson 1.2.47 -->
+        <!-- alibaba fastjson 1.2.47（有漏洞）升级到1.2.58 -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.47</version>
+            <version>1.2.58</version>
         </dependency>
         <dependency>
             <groupId>redis.clients</groupId>
@@ -52,4 +48,17 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
