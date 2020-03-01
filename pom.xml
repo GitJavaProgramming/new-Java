@@ -9,15 +9,29 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <v.apache.ommons-lang3>3.9</v.apache.ommons-lang3>
+        <v.apache.commons-lang3>3.9</v.apache.commons-lang3>
+        <v.apache.commons-codec>1.14</v.apache.commons-codec>
+        <v.apache.commons-beanutils>1.9.4</v.apache.commons-beanutils>
     </properties>
 
     <dependencies>
+        <!-- apache commons -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${v.apache.commons-beanutils}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${v.apache.commons-codec}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${v.apache.ommons-lang3}</version>
+            <version>${v.apache.commons-lang3}</version>
         </dependency>
+        <!-- vert 异步框架 -->
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-core</artifactId>
