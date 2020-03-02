@@ -14,9 +14,16 @@
         <v.apache.commons-beanutils>1.9.4</v.apache.commons-beanutils>
         <v.apache.commons-io>2.6</v.apache.commons-io>
         <v.google.guava>28.2-jre</v.google.guava>
+        <v.joda.time>2.10.5</v.joda.time>
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${v.joda.time}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
