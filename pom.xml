@@ -13,9 +13,16 @@
         <v.apache.commons-codec>1.14</v.apache.commons-codec>
         <v.apache.commons-beanutils>1.9.4</v.apache.commons-beanutils>
         <v.apache.commons-io>2.6</v.apache.commons-io>
+        <v.google.guava>28.2-jre</v.google.guava>
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${v.google.guava}</version>
+        </dependency>
         <!-- apache commons -->
         <dependency>
             <groupId>commons-io</groupId>

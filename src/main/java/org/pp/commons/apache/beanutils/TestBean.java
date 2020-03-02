@@ -1,8 +1,10 @@
-package org.pp.apache.common.beanutils;
+package org.pp.commons.apache.beanutils;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.Test;
+import org.pp.commons.testbean.Person;
+import org.pp.commons.testbean.User;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;

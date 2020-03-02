@@ -1,4 +1,4 @@
-package org.pp.apache.common.codec;
+package org.pp.commons.apache.codec;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.EncoderException;

@@ -1,4 +1,4 @@
-package org.pp.apache.common.beanutils;
+package org.pp.commons.testbean;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
