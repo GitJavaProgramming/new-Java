@@ -15,9 +15,24 @@
         <v.apache.commons-io>2.6</v.apache.commons-io>
         <v.google.guava>28.2-jre</v.google.guava>
         <v.joda.time>2.10.5</v.joda.time>
+        <v.asm-all>5.2</v.asm-all>
+        <v.asm>7.3.1</v.asm>
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm -->
+        <!-- 放在asm-all之前可以优先加载，asm-all中已加载的类将不会再加载 -->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>${v.asm}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.ow2.asm/asm-all -->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>${v.asm-all}</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
         <dependency>
             <groupId>joda-time</groupId>
