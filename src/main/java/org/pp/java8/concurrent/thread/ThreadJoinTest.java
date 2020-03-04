@@ -62,7 +62,7 @@ public class ThreadJoinTest {
             } catch (InterruptedException e) {
                 System.out.println("B interrupt -->> A join interrupted...");
 //                a.interrupt();
-                System.out.println("a.state = " + a.getState()); // 这里可能出现BLOCKED
+                System.out.println("a.state = " + a.getState()); // 这里可能出现BLOCKED join是同步方法
             }
             System.out.println("B running here.");
         }
