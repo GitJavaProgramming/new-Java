@@ -71,17 +71,17 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
     final V putVal(K key, V value, boolean onlyIfAbsent) {
         int hash = spread(key.hashCode()); // hash 决定了put结点的桶索引
         for (Node<K,V>[] tab = table;;) {
-            Node<K,V> f; int n, i, fh;
+            Node<K,V> f/*辅助指针*/; int n, i, fh;
             if (tab == null || (n = tab.length) == 0) // 首次put时初始化table
                 tab = initTable();
-            else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) { // 空桶直接放 如果不是空桶则意味着找到了f要插入的桶
-                // cas插入后退出循环
+            else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) { // 空桶直接放 如果不是空桶则找到了新节点要插入的桶
+                // 新建结点 cas插入后退出循环
             }
             else if ((fh = f.hash) == MOVED) // 如果在扩容就帮助扩容，下次遍历再判断
                 tab = helpTransfer(tab, f);
             else { // 不是首次插入 没有扩容 不是空桶 则意味着在非空桶链表中插入
                 // ...
-                synchronized (f) { // 锁定f也是锁定桶，避免扩容rehash引起的桶链表变化
+                synchronized (f) { // f指向桶头节点，锁定f也是锁定桶，避免扩容rehash引起的桶链表变化
                     if (tabAt(tab, i) == f) { // 判断f所在的桶 避免多线程重复插入 想到双重锁定单例的第二个if判断null
                         if (fh >= 0) { // 结点为链表
                             // put
@@ -136,6 +136,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
     
     线程安全控制在上文Java代码注释好了 扩容操作请参考其他资料
     
+    本文比较了HashMap和ConcurrentHashMap的put操作的线程安全特性
     ConcurrentHashMap很好的解决了HashMap的非线程安全问题，在桶上加锁获得更高的并发量（理想情况下每个桶只有一个元素，每个元素
     都可以由一个线程控制）
     
