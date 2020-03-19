@@ -82,7 +82,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
             else { // 不是首次插入 没有扩容 不是空桶 则意味着在非空桶链表中插入
                 // ...
                 synchronized (f) { // f指向桶头节点，锁定f也是锁定桶，避免扩容rehash引起的桶链表变化
-                    if (tabAt(tab, i) == f) { // 判断f所在的桶 避免多线程重复插入 想到双重锁定单例的第二个if判断null
+                    if (tabAt(tab, i) == f) { // 由于存在扩容影响需要再次判断f所在的桶是否变动，保证map数据一致
                         if (fh >= 0) { // 结点为链表
                             // put
                         }
