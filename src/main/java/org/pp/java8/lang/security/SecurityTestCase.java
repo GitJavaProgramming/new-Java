@@ -22,6 +22,17 @@ import java.util.Set;
 
 public class SecurityTestCase {
 
+    /**
+     * SecurityManager
+     * https://www.cnblogs.com/itplay/p/10732329.html
+     */
+    @Test
+    public void testSecurityManager() {
+        System.loadLibrary("");
+        Runtime.getRuntime().loadLibrary("");
+//        ClassLoader.loadLibrary
+    }
+
     @Test
     public void testSsl() throws IOException {
         URL url = new URL("https://www.baidu.com");
