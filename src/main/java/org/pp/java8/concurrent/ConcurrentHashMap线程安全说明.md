@@ -81,7 +81,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
                 tab = helpTransfer(tab, f);
             else { // 不是首次插入 没有扩容 不是空桶 则意味着在非空桶链表中插入
                 // ...
-                synchronized (f) { // f指向桶头节点，锁定f也是锁定桶，避免扩容rehash引起的桶链表变化
+                synchronized (f) { // f指向桶头节点，锁定f也是锁定桶，避免扩容时Node标记 相当于某个线程的快照
                     if (tabAt(tab, i) == f) { // 由于存在扩容影响需要再次判断f所在的桶是否变动，保证map数据一致
                         if (fh >= 0) { // 结点为链表
                             // put
@@ -118,6 +118,163 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
     static final <K,V> Node<K,V> tabAt(Node<K,V>[] tab, int i) {
         return (Node<K,V>)U.getObjectVolatile(tab, ((long)i << ASHIFT) + ABASE);
     }
+    
+    /* 如果线程发现map正在扩容就帮助扩容 */
+    // ...
+    final Node<K,V>[] helpTransfer(Node<K,V>[] tab, Node<K,V> f) {
+        Node<K,V>[] nextTab; int sc;
+        if (tab != null && (f instanceof ForwardingNode) &&
+            (nextTab = ((ForwardingNode<K,V>)f).nextTable) != null) {
+            int rs = resizeStamp(tab.length);
+            while (nextTab == nextTable && table == tab &&
+                   (sc = sizeCtl) < 0) {
+                if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 ||
+                    sc == rs + MAX_RESIZERS || transferIndex <= 0)
+                    break;
+                if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1)) {
+                    transfer(tab, nextTab);
+                    break;
+                }
+            }
+            return nextTab;
+        }
+        return table;
+    }
+
+    private final void transfer(Node<K,V>[] tab, Node<K,V>[] nextTab) {
+        int n = tab.length, stride;
+        if ((stride = (NCPU > 1) ? (n >>> 3) / NCPU : n) < MIN_TRANSFER_STRIDE)
+            stride = MIN_TRANSFER_STRIDE; // subdivide range
+        if (nextTab == null) {            // initiating
+            try {
+                @SuppressWarnings("unchecked")
+                Node<K,V>[] nt = (Node<K,V>[])new Node<?,?>[n << 1];
+                nextTab = nt;
+            } catch (Throwable ex) {      // try to cope with OOME
+                sizeCtl = Integer.MAX_VALUE;
+                return;
+            }
+            nextTable = nextTab;
+            transferIndex = n;
+        }
+        int nextn = nextTab.length;
+        ForwardingNode<K,V> fwd = new ForwardingNode<K,V>(nextTab);
+        boolean advance = true;
+        boolean finishing = false; // to ensure sweep before committing nextTab
+        for (int i = 0, bound = 0;;) {
+            Node<K,V> f; int fh;
+            while (advance) {
+                int nextIndex, nextBound;
+                if (--i >= bound || finishing)
+                    advance = false;
+                else if ((nextIndex = transferIndex) <= 0) {
+                    i = -1;
+                    advance = false;
+                }
+                else if (U.compareAndSwapInt
+                         (this, TRANSFERINDEX, nextIndex,
+                          nextBound = (nextIndex > stride ?
+                                       nextIndex - stride : 0))) {
+                    bound = nextBound;
+                    i = nextIndex - 1;
+                    advance = false;
+                }
+            }
+            if (i < 0 || i >= n || i + n >= nextn) {
+                int sc;
+                if (finishing) {
+                    nextTable = null;
+                    table = nextTab;
+                    sizeCtl = (n << 1) - (n >>> 1);
+                    return;
+                }
+                if (U.compareAndSwapInt(this, SIZECTL, sc = sizeCtl, sc - 1)) {
+                    if ((sc - 2) != resizeStamp(n) << RESIZE_STAMP_SHIFT)
+                        return;
+                    finishing = advance = true;
+                    i = n; // recheck before commit
+                }
+            }
+            else if ((f = tabAt(tab, i)) == null)
+                advance = casTabAt(tab, i, null, fwd);
+            else if ((fh = f.hash) == MOVED)
+                advance = true; // already processed
+            else {
+                synchronized (f) {
+                    if (tabAt(tab, i) == f) {
+                        Node<K,V> ln, hn;
+                        if (fh >= 0) {
+                            int runBit = fh & n;
+                            Node<K,V> lastRun = f;
+                            for (Node<K,V> p = f.next; p != null; p = p.next) {
+                                int b = p.hash & n;
+                                if (b != runBit) {
+                                    runBit = b;
+                                    lastRun = p;
+                                }
+                            }
+                            if (runBit == 0) {
+                                ln = lastRun;
+                                hn = null;
+                            }
+                            else {
+                                hn = lastRun;
+                                ln = null;
+                            }
+                            for (Node<K,V> p = f; p != lastRun; p = p.next) {
+                                int ph = p.hash; K pk = p.key; V pv = p.val;
+                                if ((ph & n) == 0)
+                                    ln = new Node<K,V>(ph, pk, pv, ln);
+                                else
+                                    hn = new Node<K,V>(ph, pk, pv, hn);
+                            }
+                            setTabAt(nextTab, i, ln);
+                            setTabAt(nextTab, i + n, hn);
+                            setTabAt(tab, i, fwd);
+                            advance = true;
+                        }
+                        else if (f instanceof TreeBin) {
+                            TreeBin<K,V> t = (TreeBin<K,V>)f;
+                            TreeNode<K,V> lo = null, loTail = null;
+                            TreeNode<K,V> hi = null, hiTail = null;
+                            int lc = 0, hc = 0;
+                            for (Node<K,V> e = t.first; e != null; e = e.next) {
+                                int h = e.hash;
+                                TreeNode<K,V> p = new TreeNode<K,V>
+                                    (h, e.key, e.val, null, null);
+                                if ((h & n) == 0) {
+                                    if ((p.prev = loTail) == null)
+                                        lo = p;
+                                    else
+                                        loTail.next = p;
+                                    loTail = p;
+                                    ++lc;
+                                }
+                                else {
+                                    if ((p.prev = hiTail) == null)
+                                        hi = p;
+                                    else
+                                        hiTail.next = p;
+                                    hiTail = p;
+                                    ++hc;
+                                }
+                            }
+                            ln = (lc <= UNTREEIFY_THRESHOLD) ? untreeify(lo) :
+                                (hc != 0) ? new TreeBin<K,V>(lo) : t;
+                            hn = (hc <= UNTREEIFY_THRESHOLD) ? untreeify(hi) :
+                                (lc != 0) ? new TreeBin<K,V>(hi) : t;
+                            setTabAt(nextTab, i, ln);
+                            setTabAt(nextTab, i + n, hn);
+                            setTabAt(tab, i, fwd);
+                            advance = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 }
 ```
     ConcurrentHashMap就是要对映射中的可变量进行控制做到线程安全
@@ -134,12 +291,33 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
     这个指令可以在Intel官网找到。intel 64与IA32架构软件开发手册 https://software.intel.com/en-us/articles/intel-sdm 在本
     项目中也可以找到 org/pp/java8/concurrent/253666-sdm-vol-2a[291-295]-CMPXCHG指令.pdf
     
-    线程安全控制在上文Java代码注释好了 扩容操作请参考其他资料
+    线程安全控制在上文Java代码注释好了
     
-    本文比较了HashMap和ConcurrentHashMap的put操作的线程安全特性
+    上文比较了HashMap和ConcurrentHashMap的put操作的线程安全特性
     ConcurrentHashMap很好的解决了HashMap的非线程安全问题，在桶上加锁获得更高的并发量（理想情况下每个桶只有一个元素，每个元素
     都可以由一个线程控制）
+## ConcurrentHashMap的扩容妙招
+
+    扩容终极一问：如何扩容（扩容算法）？？
     
+    如何判断map正在扩容？？
+    (fh = f.hash) == MOVED  // MOVED = -1; // hash for forwarding nodes
+    
+    当Node桶标识为ForwardingNode表示该桶已经处理过是一个待转移桶
+    ForwardingNode<K,V> fwd = new ForwardingNode<K,V>(nextTab);
+    
+    transfer迁移桶出现在以下几处:
+    transfer -> helpTransfer() // 帮助扩容时
+    transfer -> addCount -> putVal -> put
+    transfer -> tryPresize -> putAll
+    transfer -> tryPresize -> treeifyBin  // 如果映射大小小于MIN_TREEIFY_CAPACITY = 64 就扩容
+    
+    ForwardingNode提供find方法  ForwardingNode.find -> ConcurrentHashMap.get 在map.get时如果在扩容也可以安全的取到值
+    
+    线程帮助扩容时如果发现帮助的是已处理过的待转移桶 如何寻找下一个？？
+    
+    
+
     
     
     
