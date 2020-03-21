@@ -50,6 +50,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     在放入元素时，put操作会用到hash(key)去构造要放入的Node结点，并且决定要放在table（数组）哪个索引上
     
     HashMap的线程安全问题：并发场景下
+    源码HashMap.resize()中newTab[e.hash & (newCap - 1)] = e;
     如果线程A正在put操作，要插入的Node结点构造了，尾节点也找到了。
     此时线程B也在put，但是put时发现需要resize，线程B执行resize()完成。
     此时线程A操作完成，但是有可能resize后这个尾节点已经不是之前A找到的尾节点啦，但是A线程就是把Tail.next指向了newNode。
