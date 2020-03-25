@@ -93,4 +93,44 @@ Compiled from "StreamTest.java"
           61: return
     }
 ```
-    好像没有执行两次谓词判断 没有生成更多的字节码？？ 
+    好像没有执行两次谓词判断 没有生成更多的字节码？？
+    代码前面的行号是啥 怎么生成的？？
+   
+javap: jdk源码目录\langtools\src\share\classes\com\sun\tools\javap
+```
+JavapTask.java
+private void handleOption(String name, Iterator<String> rest) throws BadArgs {
+        for (Option o: recognizedOptions) {
+            if (o.matches(name)) {
+                if (o.hasArg) {
+                    if (rest.hasNext())
+                        o.process(this, name, rest.next());
+                    else
+                        throw new BadArgs("err.missing.arg", name).showUsage(true);
+                } else
+                    o.process(this, name, null);
+
+                if (o.ignoreRest()) {
+                    while (rest.hasNext())
+                        rest.next();
+                }
+                return;
+            }
+        }
+
+        if (fileManager.handleOption(name, rest))
+            return;
+
+        throw new BadArgs("err.unknown.option", name).showUsage(true);
+    }
+
+    javap -c命令
+    new Option(false, "-c") {
+        void process(JavapTask task, String opt, String arg) {
+            task.options.showDisassembled = true;
+        }
+    }
+
+    if (fileManager == null)
+                fileManager = getDefaultFileManager(diagnosticListener, log);
+``` 
