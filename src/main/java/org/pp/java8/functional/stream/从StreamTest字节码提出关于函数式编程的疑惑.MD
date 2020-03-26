@@ -93,8 +93,18 @@ Compiled from "StreamTest.java"
           61: return
     }
 ```
-    好像没有执行两次谓词判断 没有生成更多的字节码？？
+    从字节码看到没有执行两次谓词判断 没有生成更多的字节码？？
     代码前面的行号是啥 怎么生成的？？
+    
+    解答：字节码阅读的问题没有回答
+    函数式问题解答：
+        最牛解答（其中讨论区的链接读起来更易理解）：https://www.zhihu.com/question/36782552
+                                                https://blog.csdn.net/pongba/article/details/1336028
+        阅读理解；与图灵机抽象的倾向于硬件性不同，丘齐的lambda算子理论是从数学的角度进行抽象，不关心运算的机械过程而只关心运算
+        的抽象性质，只用最简洁的几条公理便建立起了与图灵机完全等价的计算模型，其体现出来的数学抽象美开出了函数式编程语言这朵奇葩
+        
+        疑问：如何在图灵机上实现函数式，lambda演算的解释器？？
+
    
 javap: jdk源码目录\langtools\src\share\classes\com\sun\tools\javap
 ```
