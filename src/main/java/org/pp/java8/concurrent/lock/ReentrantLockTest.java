@@ -1,11 +1,9 @@
 package org.pp.java8.concurrent.lock;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Stream;
@@ -91,8 +89,8 @@ public class ReentrantLockTest {
         Runnable runnable = () -> {
             while(!stop) {
 //                System.out.println(Thread.currentThread().getName() + "启动");
-//                lockTest.testNonFairLock();   // 线程饥饿
-                lockTest.testFairLock();   // 所有线程获得锁的次数一样
+                lockTest.testNonFairLock();   // 线程饥饿
+//                lockTest.testFairLock();   // 所有线程获得锁的次数一样
             }
         };
 
@@ -109,8 +107,9 @@ public class ReentrantLockTest {
         for (int i = 0; i < 10; i++) {
             threadArray[i].start();
         }
-        TimeUnit.MILLISECONDS.sleep(1000); // 1秒钟后关闭
-        shutDown();
+        TimeUnit.MILLISECONDS.sleep(1000); // 1秒钟后关闭所有线程的调度
+        stop = true;
+//        TimeUnit.MILLISECONDS.sleep(1000); // 1秒钟时间内其他饥饿线程将会获得锁
         map.entrySet().parallelStream()
                 .sorted(Comparator.comparing(Map.Entry::getKey))
                 .forEach(System.out::println);
@@ -121,9 +120,81 @@ public class ReentrantLockTest {
         stop = true;
     }
 
+    static class TestThread extends Thread {
+
+//        public TestThread(CountDownLatch latch) {
+//
+//        }
+
+        @Override
+        public void run() {
+            try {
+                test3();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void testLock(ReentrantLock lock) {
+        try {
+            lock.lock();
+            holdLockCount.getAndIncrement();
+            map.put(Thread.currentThread().getName(), holdLockCount);
+            System.out.println(Thread.currentThread().getName() + "获得了锁");
+            TimeUnit.MILLISECONDS.sleep(100); // 休眠1秒 等其他线程重入
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+//            System.out.println(Thread.currentThread().getName() + "释放了锁");
+        }
+    }
+
+    public static void test3() throws InterruptedException {
+//        final ReentrantLock lock = new ReentrantLock(true);
+        final ReentrantLock lock = new ReentrantLock();
+        Runnable runnable = () -> {
+            while(!stop) {
+                testLock(lock);
+            }
+        };
+
+//        // 测试1
+//        ExecutorService service = Executors.newFixedThreadPool(10); // 10个线程
+//        service.execute(runnable); // 一个线程在调度
+//        service.shutdown();
+
+        // 测试2
+        Thread[] threadArray = new Thread[10];
+        for (int i = 0; i < 10; i++) {
+            threadArray[i] = new Thread(runnable);
+        }
+
+//        for (int i = 0; i < 10; i++) {
+//            threadArray[i].start();
+//        }
+
+        // 测试3
+        Arrays.stream(threadArray)/*.parallel()*/.forEach(Thread::start);
+
+//        TimeUnit.MILLISECONDS.sleep(1000); // 1秒钟后关闭
+//        shutDown();
+    }
+
     public static void main(String[] args) throws InterruptedException {
 //        test1();
-        test2();
+//        test2();
+
+        Thread thread = new TestThread();
+        thread.start();
+        TimeUnit.SECONDS.sleep(1); // 让任务执行完
+        shutDown();
+//        TimeUnit.SECONDS.sleep(1); // 饥饿线程获得锁
+        map.entrySet().parallelStream()
+                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .forEach(System.out::println);
+
     }
 }
 
