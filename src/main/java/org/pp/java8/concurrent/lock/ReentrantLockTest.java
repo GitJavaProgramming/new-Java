@@ -3,16 +3,18 @@ package org.pp.java8.concurrent.lock;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Stream;
 
 /**
  *  公平锁在锁释放后会严格按照等待队列去取后续值.非公平锁在实现的时候多次强调随机抢占,与公平锁的区别在于新晋获取锁的进程会有
  *  多次机会去抢占锁。如果被加入了等待队列后则跟公平锁没有区别。
  */
-public class ReentrantLockTest {
+public class ReentrantLockTest /*extends MXBean */{
     private ReentrantLock lock = new ReentrantLock(true);
 
     /**
@@ -21,8 +23,8 @@ public class ReentrantLockTest {
     public void testFairLock() {
         try {
             lock.lock();
-            holdLockCount.getAndIncrement();
-            map.put(Thread.currentThread().getName(), holdLockCount);
+//            holdLockCount.getAndIncrement();
+//            map.put(Thread.currentThread().getName(), holdLockCount);
             System.out.println(Thread.currentThread().getName() + "获得了锁");
             TimeUnit.MILLISECONDS.sleep(100); // 休眠1秒 等其他线程重入
         } catch (InterruptedException e) {
@@ -60,10 +62,11 @@ public class ReentrantLockTest {
     /**********************************************非公平锁*****************************************************/
     private ReentrantLock nonFairlock = new ReentrantLock();
     private static volatile boolean stop = false;
-    /* 线程获得锁的次数 */
-    private static AtomicInteger holdLockCount = new AtomicInteger(0);
-    /* 每个线程获得锁的次数映射 */
+    /** 线程获得锁的次数 */
+//    private static AtomicInteger holdLockCount = new AtomicInteger(0);
+    /** 每个线程获得锁的次数映射 */
     private static final Map<String, AtomicInteger> map = new ConcurrentHashMap<>(10);
+    private static AtomicInteger printStrCount = new AtomicInteger(0);
     /**
      * 非公平锁：随机抢占锁，不能保证所有线程都能获得锁？？
      *      * 避免饿死就应该是采用队列的方式，保证每个人都有机会获得请求的资源。
@@ -73,8 +76,8 @@ public class ReentrantLockTest {
     public void testNonFairLock() {
         try {
             nonFairlock.lock();
-            holdLockCount.getAndIncrement();
-            map.put(Thread.currentThread().getName(), holdLockCount);
+//            holdLockCount.getAndIncrement();
+//            map.put(Thread.currentThread().getName(), holdLockCount);
             System.out.println(Thread.currentThread().getName() + "获得了锁");
             TimeUnit.MILLISECONDS.sleep(100);
         } catch (InterruptedException e) {
@@ -122,14 +125,16 @@ public class ReentrantLockTest {
 
     static class TestThread extends Thread {
 
-//        public TestThread(CountDownLatch latch) {
-//
-//        }
+        private final ReentrantLock lock;
+
+        public TestThread(ReentrantLock lock) {
+            this.lock = lock;
+        }
 
         @Override
         public void run() {
             try {
-                test3();
+                test3(lock);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -137,23 +142,34 @@ public class ReentrantLockTest {
     }
 
     public static void testLock(ReentrantLock lock) {
+        String threadName = Thread.currentThread().getName();
         try {
+//            locked = lock.tryLock(100, TimeUnit.MILLISECONDS);
             lock.lock();
-            holdLockCount.getAndIncrement();
-            map.put(Thread.currentThread().getName(), holdLockCount);
-            System.out.println(Thread.currentThread().getName() + "获得了锁");
+            if(map.containsKey(threadName)) {
+                AtomicInteger atomicInteger = map.get(threadName);
+                atomicInteger.getAndIncrement();
+                map.put(threadName, atomicInteger);
+            } else {
+                AtomicInteger holdLockCount = new AtomicInteger(1);
+                map.put(threadName, holdLockCount);
+            }
+            printStrCount.getAndIncrement();
+            System.out.println(threadName + "获得了锁");
             TimeUnit.MILLISECONDS.sleep(100); // 休眠1秒 等其他线程重入
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println(threadName + "被中断");
         } finally {
+            printStrCount.getAndIncrement();
+            System.out.println(threadName + "释放锁");
             lock.unlock();
 //            System.out.println(Thread.currentThread().getName() + "释放了锁");
         }
     }
 
-    public static void test3() throws InterruptedException {
+    public static void test3(ReentrantLock lock) throws InterruptedException {
 //        final ReentrantLock lock = new ReentrantLock(true);
-        final ReentrantLock lock = new ReentrantLock();
+//        final ReentrantLock lock = new ReentrantLock();
         Runnable runnable = () -> {
             while(!stop) {
                 testLock(lock);
@@ -182,19 +198,34 @@ public class ReentrantLockTest {
 //        shutDown();
     }
 
-    public static void main(String[] args) throws InterruptedException {
+//    private static void printTrace() {
+//        StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+//        Arrays.stream(stackTrace).parallel().forEach(System.out::println);
+//    }
+
+    public static void main(String[] args) throws InterruptedException, ClassNotFoundException {
 //        test1();
 //        test2();
 
-        Thread thread = new TestThread();
+
+        final ReentrantLock lock = new ReentrantLock(true);
+//        final ReentrantLock lock = new ReentrantLock();
+        Thread thread = new TestThread(lock);
         thread.start();
         TimeUnit.SECONDS.sleep(1); // 让任务执行完
         shutDown();
 //        TimeUnit.SECONDS.sleep(1); // 饥饿线程获得锁
+        // 公平锁不会出现一个线程加锁次数比别的多2
+        // 非公平锁中间状态：抢占的不公平使有线程饥饿。
         map.entrySet().parallelStream()
                 .sorted(Comparator.comparing(Map.Entry::getKey))
                 .forEach(System.out::println);
-
+//            System.out.println("当前加锁：" + (printStrCount.updateAndGet(i-> i>>1)) + "次");
+        TimeUnit.SECONDS.sleep(3); // 饥饿线程获得锁
+        map.entrySet().parallelStream()
+//                .sorted(Comparator.comparing(Map.Entry::getKey))
+                .forEach(System.out::println);
+        System.out.println("共加锁：" + (printStrCount.updateAndGet(i-> i>>1)) + "次"); // 最终一致
     }
 }
 
