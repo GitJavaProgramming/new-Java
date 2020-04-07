@@ -1,7 +1,7 @@
 package org.pp.java8.concurrent.lock;
 
 import org.pp.java8.concurrent.annotation.NotThreadSafe;
-import org.pp.java8.util.ReflectionUtl;
+import org.pp.util.ReflectionUtl;
 
 import java.lang.reflect.Array;
 import java.util.concurrent.TimeUnit;

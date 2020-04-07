@@ -1,4 +1,4 @@
-package org.pp.java8.util;
+package org.pp.util;
 
 import java.util.ArrayList;
 import java.util.Collections;

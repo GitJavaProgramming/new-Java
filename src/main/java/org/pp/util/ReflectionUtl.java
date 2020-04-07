@@ -1,4 +1,4 @@
-package org.pp.java8.util;
+package org.pp.util;
 
 import org.pp.java8.algorithm.sort.MergeSort;
 

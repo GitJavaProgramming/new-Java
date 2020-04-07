@@ -3,7 +3,7 @@ package org.pp.java8.algorithm.datastruct.linear;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-import static org.pp.java8.util.ReflectionUtl.getSuperClassGenericType;
+import static org.pp.util.ReflectionUtl.getSuperClassGenericType;
 
 public class GenericArrayList<T> {
     private T[] ts;
