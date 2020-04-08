@@ -1,4 +1,4 @@
-package org.pp.java8.concurrent.asimpledemo.lock;
+package org.pp.java8.concurrent.lock.asimpledemo.lock;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;

@@ -1,4 +1,4 @@
-package org.pp.java8.concurrent.asimpledemo.lock;
+package org.pp.java8.concurrent.lock.asimpledemo.lock;
 
 /**
  * N个线程，打印AaBb...Zz，M遍

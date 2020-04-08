@@ -1,4 +1,4 @@
-package org.pp.java8.concurrent.asimpledemo.semaphore;
+package org.pp.java8.concurrent.lock.asimpledemo.semaphore;
 
 /**
  * N个线程，打印AaBb...Zz，M遍

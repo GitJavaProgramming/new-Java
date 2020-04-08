@@ -1,4 +1,4 @@
-package org.pp.java8.concurrent.asimpledemo.semaphore;
+package org.pp.java8.concurrent.lock.asimpledemo.semaphore;
 
 import java.util.Arrays;
 
