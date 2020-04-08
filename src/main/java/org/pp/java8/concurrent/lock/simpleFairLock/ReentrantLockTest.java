@@ -1,4 +1,4 @@
-package org.pp.java8.concurrent.lock;
+package org.pp.java8.concurrent.lock.simpleFairLock;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -125,9 +126,9 @@ public class ReentrantLockTest /*extends MXBean */{
 
     static class TestThread extends Thread {
 
-        private final ReentrantLock lock;
+        private final Lock lock;
 
-        public TestThread(ReentrantLock lock) {
+        public TestThread(Lock lock) {
             this.lock = lock;
         }
 
@@ -141,7 +142,7 @@ public class ReentrantLockTest /*extends MXBean */{
         }
     }
 
-    public static void testLock(ReentrantLock lock) {
+    public static void testLock(Lock lock) {
         String threadName = Thread.currentThread().getName();
         try {
 //            locked = lock.tryLock(100, TimeUnit.MILLISECONDS);
@@ -167,7 +168,7 @@ public class ReentrantLockTest /*extends MXBean */{
         }
     }
 
-    public static void test3(ReentrantLock lock) throws InterruptedException {
+    public static void test3(Lock lock) throws InterruptedException {
 //        final ReentrantLock lock = new ReentrantLock(true);
 //        final ReentrantLock lock = new ReentrantLock();
         Runnable runnable = () -> {
