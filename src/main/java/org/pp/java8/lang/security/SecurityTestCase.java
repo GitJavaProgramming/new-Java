@@ -1,6 +1,5 @@
 package org.pp.java8.lang.security;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -12,13 +11,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.security.*;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
 
 public class SecurityTestCase {
 
@@ -49,7 +44,7 @@ public class SecurityTestCase {
         System.out.println(new String(content));
 
         conn.getHeaderFields().forEach((k, s) -> {
-            if (StringUtils.isBlank(k)) {
+            if (k == null || k.isEmpty()) {
                 System.out.println(s);
             } else {
                 System.out.println(k + ":" + s);
@@ -75,7 +70,7 @@ public class SecurityTestCase {
         // SHA out
         String outStr = new String(outBytes/*, Charset.defaultCharset()*/);
         System.out.println(outStr);
-        outStr = StringUtils.join(outBytes, ""/*null*/);
+        outStr = outBytes + "";
         System.out.println(outStr);
 
         // MD5

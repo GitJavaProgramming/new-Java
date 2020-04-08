@@ -1,0 +1,88 @@
+IO是一个很大的话题，这里说的IO不涉及内核IO，只到系统调用层面。
+Linux内核IO（原文地址：https://www.cnblogs.com/zengkefu/p/5634853.html）
+1.  page cache
+linux操作系统默认情况下写都是有写缓存的，可以使用direct IO方式绕过操作系统的写缓存。当你写一串数据时，系统会开辟一块内存区域缓存这些数据，这块区域就是我们常说的page cache（操作系统的页缓存）。查看系统内存常用的命令有：vmstat、free、top等。
+可以使用 cat /proc/meminfo 查看详细的内存使用情况
+其中的Cached为140M左右（page cache）。注意其中有一个Dirty: 24KB，表示当前有24KB的数据缓存在page cache，这些数据等待后台线程刷入磁盘。随着写入数据增加，这个值也会增加。
+2. writeback
+有了page cache就有了writeback写方式。一个写IO会先写入page cache，然后等待后台pdflush把page cache中脏数据刷入磁盘。如果在刷入磁盘之前系统断电，则page cache的数据丢失。所以对一些可靠性要求高的场景都会把这个写缓存禁掉。writeback写方式是linux操作系统提供的一种非常通用写模式。writeback提供了较好的吞吐量，有了缓存也缩短了IO响应时间。但它也有缺点：（1）断电可能丢数据（数据安全性）（2）对于像数据库这样自缓存的系统来说，多了一层IO缓存开销。因为数据库已经在应用层做了一层缓存。所以对于这样的应用可以用direct io方式，减少用户空间和page cache之间数据复制开销。（3）如果page cache过大，那么就会缓存太多的数据，当需要统一刷入磁盘的时候就会出现一个IO峰值和瓶颈，在这其间对用户的IO访问出现明显影响。如果想削平这个峰值可以把page cache容量设置小一点，让pdflush一段时间内较为平均的刷新dirty数据。
+3. pdflush
+pdflush是linux系统后台运行的一个线程，这个进程负责把page cahce中的dirty状态的数据定期的输入磁盘。一个系统中会运行很多这个pdflush。cat /proc/sys/vm/nr_pdflush_threads查看当前系统运行pdflush数量。当一段时间（一般是1s）没有任何的pdflush处于工作状态，系统会remove一个pdflush线程。pdflush最大和最小的数量是有配置的，但这些配置一般很少修改。
+4. 几个重要的IO写相关参数
+4.1 dirty_writeback_centisecs
+cat /proc/sys/vm/dirty_writeback_centisecs查看这个值，默认一般是500（单位是1/100秒）。这个参数表示5s的时间pdflush就会被唤起去刷新脏数据。没有官方文档说明减少这个值就会有更多的pdflush参与刷数据。比如2.6或者更早的内核，linux中mm/page-writeback.c的源码中有这样一段描述“如果pdflush刷新脏数据的时间超过了这个配置时间，则完成刷新后pdflush会sleep 1s“。这种拥塞的保护机制描述只是写在源码里，并没有写入官方文档或者形成规范，所以也就意味着这种机制在不同的版本可能有不同的表现。
+所以修改dirty_writeback_centisecs并不一定能给你带来多少性能的提升，相反有可能出现你意想不到的问题。一般建议用户使用默认值。
+4.2 dirty_expire_centisecs
+cat /proc/sys/vm/dirty_expire_centicecs查看这个值，默认是3000（单位是1/100秒）。这个值表示page cache中的数据多久之后被标记为脏数据。只有标记为脏的数据在下一个周期到来时pdflush才会刷入到磁盘，这样就意味着用户写的数据在30秒之后才有可能被刷入磁盘，在这期间断电都是会丢数据的。如果想pdfflush刷新频率大写可以减小这个值，比如：echo 1000 >> /proc/sys/vm/dirty_expire_centicecs 设置为10s一个刷新周期。
+4.3 dirty_backgroud_ratio
+cat /proc/sys/vm/dirty_backgroud_ratio查看这个值，默认是10（单位是百分比，不同的内核版本可能有不同的默认值）。很多的描述文档中描述这个值表示最多缓存脏数据的空间占总内存的百分比。其实不然，查看源码的描述，它的真实意义是占（MemFree + Cached - Mapped）的百分比。达到这个上限后会唤醒pdflush把这些脏数据刷新到磁盘，在把脏数据输入磁盘之前所有写IO会被阻塞。所以如果这个值设的过大，则会周期的出现一个写IO峰值，而且这个峰值持续比较长时间，在这段时间内用户的写IO会被阻塞。对于一些业务场景需要把这个值设置的小写，把峰值写IO平分为多次小的写IO。例如：echo 5 >> cat /proc/sys/vm/dirty_backgroud_ratio 把百分比降低到5%。
+4.4  dirty_ratio
+cat /proc/sys/vm/dirty_ratio查看这个值，默认是20（单位是百分比，不同的内核版本可能有不同的默认值）。表示当脏数据占用总内存的百分比超过20%的时候，内核会把所有的写操作阻塞掉，等待pdflush把这些脏数据刷入到磁盘后才能恢复正常的IO写。要注意的是当这个事件发生时，会阻塞掉所有写操作。这样会产生一个很大的问题，一个长时间大IO会抢占更多的IO写资源，可能把其它的小IO饿死。因为大IO产生的脏数据较多，很快达到这个阀值，此时就会系统会阻塞掉所有的写IO，从而小写IO无法进行写操作。
+
+上面讲了这么多其实就想说明一点内核是有缓冲区的~~
+
+多数CPU都有两种模式，内核态与用户态。PSW寄存器控制。（CPU体系结构）在内核态运行时，CPU可以执行指令集中的每一条指令，可以访问整个硬件。
+一般而言，在用户态中有关I/O的和内存保护的所有指令是禁止的。用户程序必须使用系统调用陷入内核并调用操作系统。
+系统调用接口是进入内核的入口。由于引发系统调用的实际机制是非常依赖与机器的，而且必须用汇编语言代码表达，所以，通过提供过程库使C程序中
+能够使用系统调用。
+
+几种模型去查看Unix网络编程 和APUE一套的大师出手（在） -- ch06 IO复用--6.2 I/O模型
+UNIX 5种IO模型： 阻塞I/O、非阻塞I/O、I/O复用、信号驱动I/O和异步I/O。
+内核I/O
+系统调用
+    epoll如何高效 不看内核就看这篇
+        https://www.cnblogs.com/tqyysm/p/9782631.html
+        http://www.bubuko.com/infodetail-589680.html
+
+关于I/O阻塞和线程阻塞
+I/O阻塞 在等待内核 占用CPU
+线程阻塞通常是指一个线程在执行过程中暂停，以等待某个条件的触发。
+Java中的线程状态 hotspot/vm/classfile/javaClasses.hpp中  class java_lang_Thread : AllStatic
+enum JavaThreadState {
+  _thread_uninitialized     =  0, // should never happen (missing initialization)
+  _thread_new               =  2, // just starting up, i.e., in process of being initialized
+  _thread_new_trans         =  3, // corresponding transition state (not used, included for completness)
+  _thread_in_native         =  4, // running in native code
+  _thread_in_native_trans   =  5, // corresponding transition state
+  _thread_in_vm             =  6, // running in VM
+  _thread_in_vm_trans       =  7, // corresponding transition state
+  _thread_in_Java           =  8, // running in Java or in stub code
+  _thread_in_Java_trans     =  9, // corresponding transition state (not used, included for completness)
+  _thread_blocked           = 10, // blocked in vm
+  _thread_blocked_trans     = 11, // corresponding transition state
+  _thread_max_state         = 12  // maximum thread state+1 - used for statistics allocation
+};
+
+  // Java Thread Status for JVMTI and M&M use.
+  // This thread status info is saved in threadStatus field of
+  // java.lang.Thread java class.
+  enum ThreadStatus {
+    NEW                      = 0,
+    RUNNABLE                 = JVMTI_THREAD_STATE_ALIVE +          // runnable / running
+                               JVMTI_THREAD_STATE_RUNNABLE,
+    SLEEPING                 = JVMTI_THREAD_STATE_ALIVE +          // Thread.sleep()
+                               JVMTI_THREAD_STATE_WAITING +
+                               JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT +
+                               JVMTI_THREAD_STATE_SLEEPING,
+    IN_OBJECT_WAIT           = JVMTI_THREAD_STATE_ALIVE +          // Object.wait()
+                               JVMTI_THREAD_STATE_WAITING +
+                               JVMTI_THREAD_STATE_WAITING_INDEFINITELY +
+                               JVMTI_THREAD_STATE_IN_OBJECT_WAIT,
+    IN_OBJECT_WAIT_TIMED     = JVMTI_THREAD_STATE_ALIVE +          // Object.wait(long)
+                               JVMTI_THREAD_STATE_WAITING +
+                               JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT +
+                               JVMTI_THREAD_STATE_IN_OBJECT_WAIT,
+    PARKED                   = JVMTI_THREAD_STATE_ALIVE +          // LockSupport.park()
+                               JVMTI_THREAD_STATE_WAITING +
+                               JVMTI_THREAD_STATE_WAITING_INDEFINITELY +
+                               JVMTI_THREAD_STATE_PARKED,
+    PARKED_TIMED             = JVMTI_THREAD_STATE_ALIVE +          // LockSupport.park(long)
+                               JVMTI_THREAD_STATE_WAITING +
+                               JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT +
+                               JVMTI_THREAD_STATE_PARKED,
+    BLOCKED_ON_MONITOR_ENTER = JVMTI_THREAD_STATE_ALIVE +          // (re-)entering a synchronization block
+                               JVMTI_THREAD_STATE_BLOCKED_ON_MONITOR_ENTER,
+    TERMINATED               = JVMTI_THREAD_STATE_TERMINATED
+  };
+
+
