@@ -7,14 +7,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="org.pp.javacore" />
-        <module name="COREJAVA" />
         <module name="org.pp.corejava" />
-        <module name="utils" />
+        <module name="COREJAVA" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
       <module name="JAVA" target="8" />
+      <module name="org.pp" target="1.8" />
+      <module name="redisson" target="1.5" />
+      <module name="utils" target="8" />
+      <module name="vertx" target="8" />
+      <module name="zookeeper" target="8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
