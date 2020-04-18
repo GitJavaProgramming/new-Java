@@ -28,7 +28,17 @@ public class GraphTest {
         System.out.println("*******************************************");
         System.out.println("顶点数:" + g.vertices());
         System.out.println("边数:" + g.edges());
-        System.out.println(g.first(0));
-        System.out.println(g.next(0, 1));
+        System.out.println("以0为起点的第一条边的终点:" + g.first(0));
+        System.out.println("边(0,1)的下一条边的终点:" + g.next(0, 1));
+        System.out.println("*********************dfs**********************");
+        g.dfs(g);
+        System.out.println("*********************bfs**********************");
+        g.bfs(g);
+        System.out.println("*******************************************");
+        // 注意first next不能和firstWithWeight nextWithWeight混用，只能选其一
+        if(g instanceof MatrixGraph) {
+            System.out.println("以0为起点的最大权重边的终点:" + ((MatrixGraph) g).firstWithWeight(0));
+            System.out.println("起点为0的第二条边的终点:" + ((MatrixGraph) g).nextWithWeight(0, ((MatrixGraph) g).firstWithWeight(0)));
+        }
     }
 }

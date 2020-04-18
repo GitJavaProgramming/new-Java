@@ -4,7 +4,26 @@ import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class AbstractGraph implements Graph {
+    /**
+     * 顶点数，也是初始矩阵维度
+     */
+    protected int numVertex;
+    /**
+     * 边
+     */
+    protected int numEdge;
 
+    @Override
+    public int vertices() {
+        return numVertex;
+    }
+
+    @Override
+    public int edges() {
+        return numEdge;
+    }
+
+    /**************************************************************************************/
     @Override
     public void dfs(Graph g) {
         // 初始化图
@@ -73,8 +92,10 @@ public abstract class AbstractGraph implements Graph {
     }
 
     protected void preVisit(Graph g, int v) {
+        System.out.println("preVisit vertex : " + v);
     }
 
     protected void postVisit(Graph g, int v) {
+        System.out.println("postVisit vertex : " + v);
     }
 }
