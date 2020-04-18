@@ -28,6 +28,7 @@ public interface Graph {
      * 设置一条边的权，权重>0
      */
     void setEdge(int v1, int v2, int wgt);
+//    void setEdge(int v1, int v2);
 
     /**
      * 获得边的权重,使用起点和终点表示一条边，如果边不存在则权重为0

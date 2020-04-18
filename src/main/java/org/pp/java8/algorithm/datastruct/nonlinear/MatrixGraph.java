@@ -1,7 +1,9 @@
 package org.pp.java8.algorithm.datastruct.nonlinear;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * 图--邻接矩阵，行列分别代表边的起点和终点
@@ -17,7 +19,6 @@ public class MatrixGraph extends AbstractGraph {
      * 是否有向，默认有向
      */
 //    private boolean hasDirection = true;
-
     public MatrixGraph(int numVertex/*矩阵维度*/) {
         this.numVertex = numVertex;
         this.numEdge = 0;
@@ -82,15 +83,8 @@ public class MatrixGraph extends AbstractGraph {
 
     @Override
     public void setEdge(int v1, int v2, int wgt) {
-        if (v1 > numVertex || v2 > numVertex) {
-            System.out.println("点不在矩阵中.");
-            return;
-        }
-        if (wgt <= 0) {
-//            throw new IllegalStateException("权重必须大于0.");
-            System.out.println("设置边时权重必须设置为大于0.");
-            return;
-        }
+        rangeCheck(v1, v2, wgt);
+
         if (matrix[v1][v2] == 0) {
             numEdge++;
         }
@@ -103,6 +97,10 @@ public class MatrixGraph extends AbstractGraph {
     @Override
     public int weight(int v1, int v2) {
         return matrix[v1][v2]; // (v1, v2)不存在边时 返回0
+    }
+
+    public void print() {
+        Stream.of(matrix).forEach(m -> System.out.println(Arrays.toString(m)));
     }
 
     protected class Pair<K extends Comparable<K>, V extends Comparable<V>/*比较V, K*/> implements Comparable<Pair<K, V>> {
@@ -124,7 +122,7 @@ public class MatrixGraph extends AbstractGraph {
 
         @Override
         public int compareTo(Pair<K, V> o) {
-            if(o.v.compareTo(this.v) == 0) { // 权重相等的边,按终点值正常顺序比较
+            if (o.v.compareTo(this.v) == 0) { // 权重相等的边,按终点值正常顺序比较
                 return this.k.compareTo(o.k);
             }
             return o.v.compareTo(this.v); // 反向排序

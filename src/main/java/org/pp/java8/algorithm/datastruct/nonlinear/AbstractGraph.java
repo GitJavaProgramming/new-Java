@@ -5,7 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class AbstractGraph implements Graph {
     /**
-     * 顶点数，也是初始矩阵维度
+     * 顶点数
      */
     protected int numVertex;
     /**
@@ -21,6 +21,17 @@ public abstract class AbstractGraph implements Graph {
     @Override
     public int edges() {
         return numEdge;
+    }
+
+    protected void rangeCheck(int v1, int v2, int wgt) {
+        if (v1 > numVertex || v2 > numVertex) {
+//            System.out.println("点不在矩阵中.");
+            throw new IllegalStateException("点不在矩阵中.");
+        }
+        if (wgt <= 0) {
+//            System.out.println("设置边时权重必须设置为大于0.");
+            throw new IllegalStateException("设置边时权重必须设置为大于0.");
+        }
     }
 
     /**************************************************************************************/
