@@ -72,7 +72,9 @@ public abstract class AbstractGraph implements Graph {
         return visited;
     }
 
-    protected abstract void preVisit(Graph g, int v);
+    protected void preVisit(Graph g, int v) {
+    }
 
-    protected abstract void postVisit(Graph g, int v);
+    protected void postVisit(Graph g, int v) {
+    }
 }
